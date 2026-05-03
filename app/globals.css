@@ -1,56 +1,100 @@
 @import "tailwindcss";
 
+/* ─── Palette ─────────────────────────────────────────── */
 :root {
-  --background: #f8f6f2;
-  --foreground: #1a1814;
-  --muted: #8a8278;
-  --accent: #c4a882;
-  --border: #e2ddd6;
-  --surface: #ffffff;
+  --ladrillo:    #E24F05;
+  --ladrillo-d:  #DD7845;
+  --arena:       #F8F0E5;
+  --arena-alt:   #F1E6D5;
+  --piedra:      #949491;
+  --hormigon:    #6B6B6E;
+  --hierro:      #0F0F10;
 
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'DM Sans', sans-serif;
+  /* Semantic tokens — light (arena) theme */
+  --bg:          var(--arena);
+  --bg-alt:      var(--arena-alt);
+  --ink:         var(--hierro);
+  --ink-soft:    #3A3A3C;
+  --ink-mute:    var(--hormigon);
+  --accent:      var(--ladrillo);
+  --rule:        rgba(15, 15, 16, 0.12);
+  --rule-soft:   rgba(15, 15, 16, 0.07);
+  --card-bg:     var(--arena-alt);
+
+  /* Typography */
+  --font-sans:   'Inter', system-ui, sans-serif;
+  --font-mono:   'IBM Plex Mono', 'Courier New', monospace;
+
+  /* Spacing rhythm */
+  --pad-x:       clamp(20px, 3vw, 56px);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-border: var(--border);
-  --color-surface: var(--surface);
-}
-
+/* ─── Reset ───────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body);
-  font-weight: 300;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  font-weight: 300;
-  letter-spacing: -0.01em;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, video {
+  display: block;
+  max-width: 100%;
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--foreground);
+  color: #fff;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--background); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+/* ─── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--piedra); }
+
+/* ─── Utility ─────────────────────────────────────────── */
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.hairline {
+  border: none;
+  border-top: 1px solid var(--rule);
+}

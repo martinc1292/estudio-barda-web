@@ -20,155 +20,125 @@ export default async function SobreNosotrosPage() {
     : null
 
   return (
-    <div style={{ paddingTop: '64px' }}>
-      {/* Título */}
-      <div
-        style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '4rem 2rem 3rem',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-            fontWeight: 300,
-            letterSpacing: '-0.02em',
-            lineHeight: 1,
-          }}
-        >
+    <div style={{ paddingTop: '56px' }}>
+
+      {/* ── Page header ──────────────────────────────── */}
+      <div style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '48px var(--pad-x) 40px',
+        borderBottom: '1px solid var(--rule)',
+      }}>
+        <span style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
+          display: 'block',
+          marginBottom: '12px',
+        }}>
           Estudio
+        </span>
+        <h1 style={{
+          fontFamily: 'var(--font-sans)',
+          fontSize: 'clamp(36px, 5vw, 72px)',
+          fontWeight: 500,
+          letterSpacing: '-0.04em',
+          lineHeight: 1.0,
+          color: 'var(--ink)',
+        }}>
+          Barda Arquitectura
         </h1>
       </div>
 
-      {/* Bio del estudio */}
-      <section
-        style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '5rem 2rem',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '6rem',
-          alignItems: 'start',
-        }}
-        className="bio-grid"
-      >
+      {/* ── Bio del estudio ───────────────────────────── */}
+      <section style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '56px var(--pad-x)',
+        display: 'grid',
+        gridTemplateColumns: '1.4fr 1fr',
+        gap: '64px',
+        alignItems: 'start',
+        borderBottom: '1px solid var(--rule)',
+      }} className="bio-grid">
         <div>
-          <p
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.7rem',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'var(--muted)',
-              marginBottom: '2rem',
-            }}
-          >
-            Barda Arquitectura
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(1.375rem, 2.5vw, 1.75rem)',
-              fontWeight: 300,
-              lineHeight: 1.55,
-              letterSpacing: '0.01em',
-            }}
-          >
+          <p style={{
+            fontFamily: 'var(--font-sans)',
+            fontSize: 'clamp(18px, 2vw, 24px)',
+            fontWeight: 400,
+            lineHeight: 1.55,
+            letterSpacing: '-0.01em',
+            color: 'var(--ink)',
+          }}>
             {config?.bioEstudio}
           </p>
         </div>
 
-        <div
-          style={{
-            paddingTop: '3rem',
-            borderTop: '1px solid var(--border)',
-          }}
-          className="bio-info"
-        >
-          <div style={{ marginBottom: '2.5rem' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                color: 'var(--muted)',
-                marginBottom: '0.5rem',
-              }}
-            >
-              Zona de trabajo
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.9375rem',
-                lineHeight: 1.6,
-                color: 'var(--foreground)',
-              }}
-            >
-              Ciudad de Buenos Aires y zona norte del Gran Buenos Aires. También desarrollamos proyectos en Río Negro, Neuquén y Misiones.
-            </p>
-          </div>
+        <div style={{ borderLeft: '1px solid var(--rule)', paddingLeft: '40px' }} className="bio-info">
+          <p style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '9.5px',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-mute)',
+            marginBottom: '16px',
+          }}>
+            Zona de trabajo
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-sans)',
+            fontSize: '14px',
+            color: 'var(--ink-soft)',
+            lineHeight: 1.7,
+          }}>
+            Ciudad de Buenos Aires y zona norte del Gran Buenos Aires. También desarrollamos proyectos en Río Negro, Neuquén y Misiones.
+          </p>
         </div>
       </section>
 
-      {/* Arquitecto */}
-      <section
-        style={{
-          background: 'var(--surface)',
-          borderTop: '1px solid var(--border)',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
-            padding: '5rem 2rem',
-            display: 'grid',
-            gridTemplateColumns: fotoUrl ? '1fr 1fr' : '1fr',
-            gap: '5rem',
-            alignItems: 'start',
-          }}
-          className="arquitecto-grid"
-        >
+      {/* ── Arquitecto ───────────────────────────────── */}
+      <section style={{ borderBottom: '1px solid var(--rule)' }}>
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto',
+          padding: '56px var(--pad-x)',
+          display: 'grid',
+          gridTemplateColumns: fotoUrl ? '1fr 1fr' : '1fr',
+          gap: '56px',
+          alignItems: 'start',
+        }} className="arquitecto-grid">
           <div>
-            <p
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                color: 'var(--muted)',
-                marginBottom: '0.5rem',
-              }}
-            >
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '9.5px',
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+              display: 'block',
+              marginBottom: '8px',
+            }}>
               Arquitecto
-            </p>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-                fontWeight: 300,
-                marginBottom: '2.5rem',
-                letterSpacing: '-0.01em',
-              }}
-            >
+            </span>
+            <h2 style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(22px, 2.5vw, 36px)',
+              fontWeight: 500,
+              letterSpacing: '-0.035em',
+              lineHeight: 1.05,
+              color: 'var(--ink)',
+              marginBottom: '32px',
+            }}>
               Joaquín Licera Vidal
             </h2>
 
-            <div
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.9375rem',
-                color: 'var(--muted)',
-                lineHeight: 1.8,
-              }}
-            >
+            <div style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '14px',
+              color: 'var(--ink-mute)',
+              lineHeight: 1.75,
+            }}>
               {config?.bioArquitecto?.split('\n\n').map((párrafo, i) => (
                 <p key={i} style={{ marginBottom: '1.25rem' }}>
                   {párrafo}
@@ -178,14 +148,12 @@ export default async function SobreNosotrosPage() {
           </div>
 
           {fotoUrl && (
-            <div
-              style={{
-                position: 'relative',
-                aspectRatio: '4/5',
-                overflow: 'hidden',
-                background: 'var(--border)',
-              }}
-            >
+            <div style={{
+              position: 'relative',
+              aspectRatio: '4/5',
+              overflow: 'hidden',
+              background: 'var(--card-bg)',
+            }}>
               <Image
                 src={fotoUrl}
                 alt={config?.fotoArquitecto?.alt ?? 'Joaquín Licera Vidal'}
@@ -200,9 +168,9 @@ export default async function SobreNosotrosPage() {
 
       <style>{`
         @media (max-width: 768px) {
-          .bio-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
-          .arquitecto-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
-          .bio-info { padding-top: 0 !important; border-top: none !important; }
+          .bio-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .bio-info { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--rule); padding-top: 32px !important; }
+          .arquitecto-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
         }
       `}</style>
     </div>

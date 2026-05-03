@@ -7,10 +7,11 @@ const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? ''
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
 
 export default defineConfig({
-  name: 'estudio-barda',
+  name: 'default',
   title: 'Estudio Barda',
   projectId,
   dataset,
+  basePath: '/studio',
   plugins: [
     structureTool({
       structure: (S) =>
