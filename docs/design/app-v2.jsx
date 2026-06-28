@@ -1,18 +1,107 @@
 /* global React, ReactDOM, PROJECTS, COPY */
 const { useState, useEffect, useMemo, useRef } = React;
 
-// Isotipo modular SVG (sistema de planos del manual)
-function Isotipo({ size = 36, mono = false }) {
-  const c1 = mono ? "currentColor" : "#0F0F10";
-  const c2 = mono ? "currentColor" : "#E24F05";
-  const c3 = mono ? "currentColor" : "#949491";
+// =======================================================================
+// LOGO SYSTEM (per "Manual de identidad visual — Barda Arquitectura, 2026")
+//
+// Isotipo: dos planos rectangulares con desplazamiento.
+//   - Plano inferior  (LADRILLO #E24F05)        — alineado a la izquierda
+//   - Plano superior  (LADRILLO DESAT #DD7845)  — desplazado a la derecha
+//   - Pequeño espacio entre ambos, fondo visible.
+//
+// El logotipo horizontal combina isotipo + "BARDA" + "ARQUITECTURA".
+// =======================================================================
+
+// Paletas por variante (manual: variaciones de color, p. 02.4)
+const BD_VARIANTS = {
+  color:       { top: "#DD7845", bot: "#E24F05" },
+  "mono-dark":  { top: "#6B6B6E", bot: "#0F0F10" }, // sobre fondo claro: hormigón/hierro
+  "mono-light": { top: "#FFFFFF", bot: "#949491" }, // sobre fondo oscuro
+  "mono-white": { top: "#F8F0E5", bot: "#FFFFFF" }, // sobre fondo color (ladrillo) → 2 tonos claros
+  "mono-black": { top: "#0F0F10", bot: "#0F0F10" }, // 1-color sólido
+};
+
+function Isotipo({ size = 32, variant = "color", title = "Barda Arquitectura — isotipo" }) {
+  const { top, bot } = BD_VARIANTS[variant] || BD_VARIANTS.color;
+  // Construcción (medida sobre el manual, p. 02.2 / 02.3):
+  //   ┌──────────┐
+  //   │   TOP    │    desat, mitad derecha (10 × 5)
+  //   └──────────┘
+  //                  ← espacio (gap, sólo derecha)
+  //   ┌──────────┐
+  //   │   tab    │    sat, mitad izquierda — apoyo (10 × 1)
+  //   ├──────────┼────────────┐
+  //   │           BOT main   │  sat, full width (20 × 5)
+  //   └──────────────────────┘
+  // viewBox 20 × 12  (ratio ≈ 5:3)
+  const w = size;
+  const h = Math.round((size * 12) / 20);
   return (
-    <svg width={size} height={size} viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="14" height="20" fill={c1}/>
-      <rect x="14" y="10" width="20" height="16" fill={c2}/>
-      <rect x="6" y="22" width="10" height="12" fill={c3}/>
-      <rect x="22" y="2" width="12" height="6" fill={c1}/>
+    <svg width={w} height={h} viewBox="0 0 20 12" xmlns="http://www.w3.org/2000/svg"
+         role="img" aria-label={title} style={{ display: "block", flexShrink: 0 }}
+         shapeRendering="crispEdges">
+      {/* Plano inferior + apoyo (forma de L) */}
+      <path d="M0 6 L10 6 L10 7 L20 7 L20 12 L0 12 Z" fill={bot}/>
+      {/* Plano superior — desaturado, alineado a la derecha */}
+      <rect x="10" y="0" width="10" height="5" fill={top}/>
     </svg>
+  );
+}
+
+// Logotipo horizontal: isotipo + BARDA + ARQUITECTURA
+function LogoHorizontal({ height = 40, variant = "color", inkColor }) {
+  const ink = inkColor
+    || (variant === "mono-light" || variant === "mono-white" ? "#F8F0E5" : "#0F0F10");
+  // Isotipo: ratio 5:3 (20×12). Isotipo height should match logo height.
+  const isoSize = Math.round(height * 20 / 12);
+  const gap = Math.round(height * 0.32);
+  return (
+    <div className="bd-logo bd-logo-h" style={{ display: "flex", alignItems: "stretch", gap }}>
+      <Isotipo size={isoSize} variant={variant} />
+      <div style={{
+        display: "flex", flexDirection: "column",
+        justifyContent: "space-between",
+        color: ink, lineHeight: 1,
+      }}>
+        <div style={{
+          fontFamily: "Inter, sans-serif",
+          fontWeight: 800,
+          fontSize: height * 0.72,
+          letterSpacing: "-0.035em",
+          lineHeight: 0.85,
+        }}>BARDA</div>
+        <div style={{
+          fontFamily: "Inter, sans-serif",
+          fontWeight: 700,
+          fontSize: height * 0.19,
+          letterSpacing: "0.06em",
+          textAlign: "right",
+        }}>ARQUITECTURA</div>
+      </div>
+    </div>
+  );
+}
+
+// Reducción vertical: isotipo arriba, BARDA centrado debajo
+function LogoVertical({ height = 64, variant = "color", inkColor }) {
+  const ink = inkColor
+    || (variant === "mono-light" || variant === "mono-white" ? "#F8F0E5" : "#0F0F10");
+  const isoSize = Math.round(height * 0.95);
+  return (
+    <div className="bd-logo bd-logo-v" style={{
+      display: "inline-flex", flexDirection: "column",
+      alignItems: "center", gap: height * 0.12,
+    }}>
+      <Isotipo size={isoSize} variant={variant} />
+      <div style={{
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 800,
+        fontSize: height * 0.34,
+        letterSpacing: "-0.03em",
+        color: ink,
+        lineHeight: 1,
+      }}>BARDA</div>
+    </div>
   );
 }
 
@@ -43,11 +132,7 @@ function TopBar({ route, setRoute, t, lang }) {
   return (
     <header className="topbar">
       <a className="brand" onClick={()=>setRoute("index")} style={{cursor:"pointer"}}>
-        <Isotipo size={36} />
-        <div className="wordmark">
-          Barda
-          <span className="sub">Arquitectura</span>
-        </div>
+        <LogoHorizontal height={26} />
       </a>
       <div></div>
       <nav className="nav">
@@ -58,6 +143,83 @@ function TopBar({ route, setRoute, t, lang }) {
         <a className="cta" onClick={()=>setRoute("contact")}>{lang==="es"?"Iniciar proyecto":"Start project"} ↗</a>
       </nav>
     </header>
+  );
+}
+
+function InteractiveComposition() {
+  const ref = React.useRef(null);
+  const rafRef = React.useRef(0);
+  const target = React.useRef({ x: 0, y: 0, p: 0 }); // -1..1, p = proximity 0..1
+  const current = React.useRef({ x: 0, y: 0, p: 0 });
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) / (r.width / 2);
+      const dy = (e.clientY - cy) / (r.height / 2);
+      // proximity: 1 when cursor is inside the rect, decays beyond
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      let p;
+      if (inside) {
+        p = 1;
+      } else {
+        // distance to closest edge
+        const ex = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+        const ey = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+        const d = Math.hypot(ex, ey);
+        p = Math.max(0, 1 - d / 260);
+      }
+      target.current.x = Math.max(-1.2, Math.min(1.2, dx));
+      target.current.y = Math.max(-1.2, Math.min(1.2, dy));
+      target.current.p = p;
+    };
+
+    const onLeave = () => {
+      target.current.x = 0;
+      target.current.y = 0;
+      target.current.p = 0;
+    };
+
+    const tick = () => {
+      const c = current.current, t = target.current;
+      c.x += (t.x - c.x) * 0.08;
+      c.y += (t.y - c.y) * 0.08;
+      c.p += (t.p - c.p) * 0.08;
+      el.style.setProperty("--mx", c.x.toFixed(4));
+      el.style.setProperty("--my", c.y.toFixed(4));
+      el.style.setProperty("--prox", c.p.toFixed(4));
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseout", onLeave);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseout", onLeave);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <div className="hero-graphic interactive" ref={ref}>
+      <div className="grid-bg" />
+      <div className="planes">
+        <div className="plane iron p1" style={{"--depth": 18, "--rot": -0.6}} />
+        <div className="plane brick p2" style={{"--depth": 32, "--rot": 0.9}} />
+        <div className="plane stone p3" style={{"--depth": 10, "--rot": -0.4}} />
+        <div className="plane brick-d p4" style={{"--depth": 22, "--rot": 0.6}} />
+        <div className="plane outline p5" style={{"--depth": 6, "--rot": -0.2}} />
+      </div>
+      <span className="corner-meta" style={{top:14, left:14}}>SISTEMA / PLANOS · MÓDULO 12</span>
+      <span className="corner-meta" style={{bottom:14, right:14}}>FIG. 01 — COMPOSICIÓN BASE</span>
+      <span className="corner-meta" style={{top:14, right:14, color:"#E24F05"}}>● 01</span>
+    </div>
   );
 }
 
@@ -92,19 +254,7 @@ function Hero({ lang }) {
             </div>
           </div>
         </div>
-        <div className="hero-graphic">
-          <div className="grid-bg" />
-          <div className="planes">
-            <div className="plane iron p1" />
-            <div className="plane brick p2" />
-            <div className="plane stone p3" />
-            <div className="plane brick-d p4" />
-            <div className="plane outline p5" />
-          </div>
-          <span className="corner-meta" style={{top:14, left:14}}>SISTEMA / PLANOS · MÓDULO 12</span>
-          <span className="corner-meta" style={{bottom:14, right:14}}>FIG. 01 — COMPOSICIÓN BASE</span>
-          <span className="corner-meta" style={{top:14, right:14, color:"#E24F05"}}>● 01</span>
-        </div>
+        <InteractiveComposition />
       </div>
     </section>
   );

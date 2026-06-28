@@ -3,9 +3,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
-import { client } from '@/sanity/lib/client'
+import { safeFetch } from '@/sanity/lib/client'
 import { urlForImage } from '@/sanity/lib/image'
 import { projectBySlugQuery, allProjectsQuery } from '@/sanity/lib/queries'
+import { TIPO_LABELS, SITE_URL } from '@/app/lib/proyecto-utils'
 import type { Project } from '@/sanity/types'
 
 export const revalidate = 60
@@ -13,35 +14,37 @@ export const revalidate = 60
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateStaticParams() {
-  const proyectos = await client.fetch<Project[]>(allProjectsQuery)
+  const proyectos = await safeFetch<Project[]>(allProjectsQuery) ?? []
   return proyectos.map((p) => ({ slug: p.slug.current }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const proyecto = await client.fetch<Project | null>(projectBySlugQuery, { slug })
+  const proyecto = await safeFetch<Project | null>(projectBySlugQuery, { slug })
   if (!proyecto) return {}
+
+  const heroUrl = proyecto.imagenPrincipal
+    ? urlForImage(proyecto.imagenPrincipal).width(1200).height(630).fit('crop').url()
+    : undefined
+
   return {
     title: proyecto.titulo,
     description: proyecto.descripcionCorta,
+    alternates: { canonical: `${SITE_URL}/proyectos/${slug}` },
+    openGraph: {
+      title: proyecto.titulo,
+      description: proyecto.descripcionCorta,
+      type: 'article',
+      ...(heroUrl && { images: [{ url: heroUrl, width: 1200, height: 630, alt: proyecto.titulo }] }),
+    },
   }
-}
-
-const tipoLabel: Record<string, string> = {
-  casa: 'Casa',
-  departamento: 'Departamento',
-  refaccion: 'Refacción',
-  local: 'Local',
-  trabajo: 'Espacio de trabajo',
-  cultural: 'Cultural',
-  otro: 'Proyecto',
 }
 
 export default async function ProyectoPage({ params }: Props) {
   const { slug } = await params
   const [proyecto, todosLosProyectos] = await Promise.all([
-    client.fetch<Project | null>(projectBySlugQuery, { slug }),
-    client.fetch<Project[]>(allProjectsQuery),
+    safeFetch<Project | null>(projectBySlugQuery, { slug }),
+    safeFetch<Project[]>(allProjectsQuery),
   ])
 
   if (!proyecto) notFound()
@@ -50,20 +53,42 @@ export default async function ProyectoPage({ params }: Props) {
     ? urlForImage(proyecto.imagenPrincipal).width(1800).height(1000).fit('crop').url()
     : null
 
-  const currentIndex = todosLosProyectos.findIndex(p => p.slug.current === slug)
-  const nextProyecto = currentIndex >= 0 && currentIndex < todosLosProyectos.length - 1
-    ? todosLosProyectos[currentIndex + 1]
+  const ogImageUrl = proyecto.imagenPrincipal
+    ? urlForImage(proyecto.imagenPrincipal).width(1200).height(630).fit('crop').url()
     : null
 
+  const currentIndex = (todosLosProyectos ?? []).findIndex(p => p.slug.current === slug)
+  const lista = todosLosProyectos ?? []
+  const nextProyecto = currentIndex >= 0 && currentIndex < lista.length - 1
+    ? lista[currentIndex + 1]
+    : null
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VisualArtwork",
+    name: proyecto.titulo,
+    description: proyecto.descripcionCorta,
+    url: `${SITE_URL}/proyectos/${slug}`,
+    creator: { "@type": "Organization", name: "Barda Arquitectura", url: SITE_URL },
+    ...(proyecto.ciudad && { locationCreated: { "@type": "Place", addressLocality: proyecto.ciudad, addressCountry: "AR" } }),
+    ...(proyecto.anio && { dateCreated: proyecto.anio.toString() }),
+    ...(ogImageUrl && { image: ogImageUrl }),
+  }
+
   return (
-    <div style={{ paddingTop: '56px' }}>
+    <div style={{ paddingTop: 'var(--navbar-h, 88px)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── Detail bar ─────────────────────────────────── */}
       <div style={{
         position: 'sticky',
-        top: '56px',
+        top: 'var(--navbar-h, 88px)',
         zIndex: 40,
-        background: 'var(--bg)',
+        background: 'color-mix(in srgb, var(--bg) 94%, transparent)',
+        backdropFilter: 'blur(8px)',
         borderBottom: '1px solid var(--rule)',
       }}>
         <div style={{
@@ -168,7 +193,7 @@ export default async function ProyectoPage({ params }: Props) {
             display: 'block',
             marginBottom: '10px',
           }}>
-            {[proyecto.tipo ? tipoLabel[proyecto.tipo] : null, proyecto.ciudad].filter(Boolean).join(' — ')}
+            {[proyecto.tipo ? TIPO_LABELS[proyecto.tipo] : null, proyecto.ciudad].filter(Boolean).join(' — ')}
           </span>
           <h1 style={{
             fontFamily: 'var(--font-sans)',
@@ -248,7 +273,7 @@ export default async function ProyectoPage({ params }: Props) {
           </p>
           <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', rowGap: '0' }}>
             {([
-              { label: 'Tipo', value: proyecto.tipo ? tipoLabel[proyecto.tipo] : null },
+              { label: 'Tipo', value: proyecto.tipo ? TIPO_LABELS[proyecto.tipo] : null },
               { label: 'Ciudad', value: proyecto.ciudad },
               { label: 'Año', value: proyecto.anio?.toString() },
             ] as Array<{ label: string; value: string | undefined | null }>)

@@ -6,3 +6,15 @@ export const client = createClient({
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION ?? '2024-01-01',
   useCdn: process.env.NODE_ENV === 'production',
 })
+
+export async function safeFetch<T>(
+  query: string,
+  params?: Record<string, unknown>
+): Promise<T | null> {
+  try {
+    return await client.fetch<T>(query, params ?? {})
+  } catch (err) {
+    console.error('[Sanity] fetch error:', err)
+    return null
+  }
+}

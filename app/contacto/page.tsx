@@ -1,187 +1,177 @@
 import type { Metadata } from 'next'
-import { client } from '@/sanity/lib/client'
+import { safeFetch } from '@/sanity/lib/client'
 import { configQuery } from '@/sanity/lib/queries'
 import type { StudioConfig } from '@/sanity/types'
+import {
+  CONTACT_DEFAULTS,
+  formatWhatsAppDisplay,
+  normalizeInstagramHandle,
+  normalizeWhatsAppNumber,
+} from '@/app/lib/proyecto-utils'
 
 export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Contacto',
-  description: 'Contactate con Barda Arquitectura por WhatsApp, email o Instagram.',
+  description: 'Iniciemos un proyecto juntos. Contactate con Barda Arquitectura.',
 }
 
 export default async function ContactoPage() {
-  const config = await client.fetch<StudioConfig>(configQuery)
+  const config = await safeFetch<StudioConfig>(configQuery)
 
-  const whatsapp = config?.whatsapp ?? '2215718737'
-  const email = config?.email ?? 'bardaarquitectura@gmail.com'
-  const instagram = config?.instagram ?? 'estudio_barda'
+  const whatsapp = normalizeWhatsAppNumber(config?.whatsapp)
+  const email = config?.email ?? CONTACT_DEFAULTS.email
+  const instagram = normalizeInstagramHandle(config?.instagram)
 
   return (
-    <div style={{ paddingTop: '56px', minHeight: '100svh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ paddingTop: 'var(--navbar-h, 88px)' }}>
 
-      {/* ── Page header ──────────────────────────────── */}
+      {/* Section header */}
       <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        width: '100%',
-        padding: '48px var(--pad-x) 40px',
+        display: 'grid',
+        gridTemplateColumns: '200px 1fr auto',
+        alignItems: 'flex-end',
+        gap: '32px',
+        padding: '56px var(--pad-x) 28px',
         borderBottom: '1px solid var(--rule)',
-      }}>
-        <span style={{
+      }} className="contacto-section-head">
+        <div style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '10.5px',
-          letterSpacing: '0.14em',
+          letterSpacing: '0.16em',
           textTransform: 'uppercase',
           color: 'var(--ink-mute)',
-          display: 'block',
-          marginBottom: '12px',
         }}>
-          Contacto
-        </span>
+          <strong style={{ color: 'var(--accent)', fontWeight: 400, marginRight: '8px' }}>04</strong>
+          SECCIÓN
+        </div>
         <h1 style={{
           fontFamily: 'var(--font-sans)',
-          fontSize: 'clamp(36px, 5vw, 72px)',
           fontWeight: 500,
-          letterSpacing: '-0.04em',
-          lineHeight: 1.0,
+          fontSize: 'clamp(28px, 3vw, 44px)',
+          letterSpacing: '-0.035em',
+          lineHeight: 1,
+          margin: 0,
           color: 'var(--ink)',
         }}>
-          Hablemos
+          Contacto
         </h1>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
+        }}>
+          ESTUDIO ACTIVO · 2026
+        </div>
       </div>
 
-      {/* ── Contenido ─────────────────────────────────── */}
-      <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        width: '100%',
+      {/* Main content */}
+      <section style={{
         padding: '56px var(--pad-x)',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1.4fr 1fr',
         gap: '64px',
-        flex: 1,
-      }} className="contacto-grid">
+        borderBottom: '1px solid var(--rule)',
+      }} className="contacto-main-grid">
 
-        {/* Texto */}
+        {/* Left — heading + description */}
         <div>
-          <p style={{
+          <h2 style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(18px, 2vw, 24px)',
-            fontWeight: 400,
-            lineHeight: 1.5,
-            letterSpacing: '-0.01em',
+            fontWeight: 500,
+            fontSize: 'clamp(40px, 5.4vw, 88px)',
+            letterSpacing: '-0.045em',
+            lineHeight: 0.96,
+            margin: 0,
             color: 'var(--ink)',
-            marginBottom: '32px',
           }}>
-            Contanos tu proyecto. Trabajamos de forma cercana con cada cliente desde la primera consulta.
-          </p>
+            Iniciemos un<br />
+            <span style={{ color: 'var(--accent)' }}>proyecto juntos.</span>
+          </h2>
           <p style={{
+            maxWidth: '540px',
+            marginTop: '28px',
             fontFamily: 'var(--font-sans)',
-            fontSize: '14px',
-            color: 'var(--ink-mute)',
-            lineHeight: 1.7,
-            maxWidth: '380px',
+            fontSize: '15px',
+            lineHeight: 1.55,
+            color: 'var(--ink-soft)',
           }}>
-            El medio principal es WhatsApp. Podés también escribirnos por email o seguirnos en Instagram para ver el trabajo del estudio.
+            Trabajamos con una primera conversación abierta para entender el programa, el contexto y los plazos antes de presupuestar.
           </p>
         </div>
 
-        {/* Links de contacto */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {[
-            {
-              label: 'WhatsApp',
-              value: `+54 ${whatsapp}`,
-              href: `https://wa.me/54${whatsapp}`,
-              external: true,
-              principal: true,
-            },
-            {
-              label: 'Email',
-              value: email,
-              href: `mailto:${email}`,
-              external: false,
-              principal: false,
-            },
-            {
-              label: 'Instagram',
-              value: `@${instagram}`,
-              href: `https://instagram.com/${instagram}`,
-              external: true,
-              principal: false,
-            },
-          ].map(item => (
-            <a
-              key={item.label}
-              href={item.href}
-              target={item.external ? '_blank' : undefined}
-              rel={item.external ? 'noopener noreferrer' : undefined}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '24px 0',
-                borderBottom: '1px solid var(--rule)',
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'background 0.15s ease',
-              }}
-              className="contact-row"
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '9.5px',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: 'var(--ink-mute)',
-                  }}>
-                    {item.label}
-                  </span>
-                  {item.principal && (
-                    <span style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '8px',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'var(--bg)',
-                      background: 'var(--accent)',
-                      padding: '2px 6px',
-                    }}>
-                      Principal
-                    </span>
-                  )}
-                </div>
-                <span style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 'clamp(16px, 1.5vw, 20px)',
-                  fontWeight: 500,
-                  letterSpacing: '-0.02em',
-                  color: 'var(--ink)',
-                }}>
-                  {item.value}
-                </span>
-              </div>
-              <span className="contact-arrow" style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '16px',
-                color: 'var(--ink-mute)',
-                transition: 'transform 0.2s ease',
-              }}>
-                →
-              </span>
+        {/* Right — specs grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          border: '1px solid var(--rule)',
+          alignSelf: 'start',
+          fontFamily: 'var(--font-sans)',
+          fontSize: '14px',
+          color: 'var(--ink)',
+        }}>
+          <div style={{ padding: '18px', borderRight: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10.5px',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+              marginBottom: '6px',
+            }}>Email</div>
+            <a href={`mailto:${email}`} style={{ color: 'inherit' }}>{email}</a>
+          </div>
+          <div style={{ padding: '18px', borderBottom: '1px solid var(--rule)' }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10.5px',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+              marginBottom: '6px',
+            }}>Teléfono</div>
+            <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+              {formatWhatsAppDisplay(whatsapp)}
             </a>
-          ))}
+          </div>
+          <div style={{ padding: '18px', borderRight: '1px solid var(--rule)' }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10.5px',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+              marginBottom: '6px',
+            }}>Instagram</div>
+            <a href={`https://instagram.com/${instagram}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+              @{instagram}
+            </a>
+          </div>
+          <div style={{ padding: '18px' }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10.5px',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+              marginBottom: '6px',
+            }}>Sede</div>
+            Buenos Aires, AR
+          </div>
         </div>
-      </div>
+      </section>
 
       <style>{`
-        @media (max-width: 768px) {
-          .contacto-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+        @media (max-width: 900px) {
+          .contacto-section-head { grid-template-columns: auto 1fr auto !important; }
+          .contacto-main-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
         }
-        .contact-row:hover .contact-arrow { transform: translateX(4px); }
+        @media (max-width: 600px) {
+          .contacto-section-head { grid-template-columns: 1fr !important; }
+          .contacto-section-head > *:last-child { display: none; }
+        }
       `}</style>
     </div>
   )

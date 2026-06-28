@@ -275,6 +275,73 @@ body.theme-dark .nav .cta { background: var(--ladrillo); color: var(--arena); }
   position: absolute;
   background: var(--hierro);
 }
+
+/* Interactive composition: planes move with the cursor + breathe when idle */
+.hero-graphic.interactive {
+  --mx: 0;
+  --my: 0;
+  --prox: 0;
+  cursor: crosshair;
+}
+.hero-graphic.interactive .plane {
+  --depth: 16;
+  --rot: 0;
+  --idle-x: 0px;
+  --idle-y: 0px;
+  will-change: transform, filter;
+  transform:
+    translate3d(
+      calc(var(--mx) * var(--depth) * 1px + var(--idle-x)),
+      calc(var(--my) * var(--depth) * 1px + var(--idle-y)),
+      0
+    )
+    rotate(calc(var(--mx) * var(--rot) * 1deg))
+    scale(calc(1 + var(--prox) * 0.012));
+  transition: filter .4s ease;
+}
+.hero-graphic.interactive:hover .plane { filter: saturate(1.06) brightness(1.02); }
+.hero-graphic.interactive .plane.p1 { animation: floatA 9.2s ease-in-out infinite; }
+.hero-graphic.interactive .plane.p2 { animation: floatB 11.4s ease-in-out infinite; }
+.hero-graphic.interactive .plane.p3 { animation: floatC 8.6s ease-in-out infinite; }
+.hero-graphic.interactive .plane.p4 { animation: floatA 10.1s ease-in-out infinite reverse; }
+.hero-graphic.interactive .plane.p5 { animation: floatB 12.8s ease-in-out infinite reverse; }
+.hero-graphic.interactive .grid-bg {
+  transform: translate3d(calc(var(--mx) * -4px), calc(var(--my) * -4px), 0);
+  transition: opacity .3s ease;
+  opacity: calc(0.6 + var(--prox) * 0.4);
+}
+.hero-graphic.interactive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at calc(50% + var(--mx) * 50%) calc(50% + var(--my) * 50%),
+    rgba(226, 79, 5, calc(var(--prox) * 0.10)),
+    transparent 70%
+  );
+  transition: opacity .3s ease;
+}
+
+@keyframes floatA {
+  0%, 100% { --idle-x: 0px; --idle-y: 0px; }
+  50%      { --idle-x: 3px; --idle-y: -4px; }
+}
+@keyframes floatB {
+  0%, 100% { --idle-x: 0px; --idle-y: 0px; }
+  50%      { --idle-x: -4px; --idle-y: 3px; }
+}
+@keyframes floatC {
+  0%, 100% { --idle-x: 0px; --idle-y: 0px; }
+  50%      { --idle-x: 2px; --idle-y: 4px; }
+}
+@property --idle-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --idle-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-graphic.interactive .plane { animation: none; transition: none; transform: none; }
+  .hero-graphic.interactive::after { display: none; }
+}
 .hero-graphic .plane.brick { background: var(--ladrillo); }
 .hero-graphic .plane.brick-d { background: var(--ladrillo-desat); }
 .hero-graphic .plane.stone { background: var(--gris-piedra); }
@@ -379,7 +446,7 @@ body.theme-dark .nav .cta { background: var(--ladrillo); color: var(--arena); }
   text-transform: uppercase;
   color: var(--ink-mute);
   position: sticky;
-  top: 96px; z-index: 40;
+  top: 83px; z-index: 40;
   background: color-mix(in srgb, var(--bg) 94%, transparent);
   backdrop-filter: blur(8px);
 }

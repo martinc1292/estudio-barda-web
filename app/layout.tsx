@@ -3,6 +3,8 @@ import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ThemeSwitcher from "./components/ThemeSwitcher";
+import { SITE_URL } from "@/app/lib/proyecto-utils";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,6 +21,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://estudio-barda.com"),
   title: {
     default: "Barda Arquitectura",
     template: "%s — Barda Arquitectura",
@@ -32,6 +35,20 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Barda Arquitectura",
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.ico`,
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    areaServed: "AR",
+    availableLanguage: "Spanish",
+  },
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,10 +56,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${ibmPlexMono.variable} h-full`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <a href="#main-content" className="skip-link">Ir al contenido principal</a>
         <Navbar />
-        <main style={{ flex: 1 }}>{children}</main>
+        <main id="main-content" style={{ flex: 1 }}>{children}</main>
         <Footer />
+        <ThemeSwitcher />
       </body>
     </html>
   );

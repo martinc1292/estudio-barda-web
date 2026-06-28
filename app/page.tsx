@@ -1,448 +1,295 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { client } from '@/sanity/lib/client'
+import { safeFetch } from '@/sanity/lib/client'
 import { urlForImage } from '@/sanity/lib/image'
-import { configQuery, featuredProjectsQuery, allServicesQuery } from '@/sanity/lib/queries'
-import type { StudioConfig, Project, Service } from '@/sanity/types'
+import { featuredProjectsQuery } from '@/sanity/lib/queries'
+import { TIPO_LABELS_SHORT } from '@/app/lib/proyecto-utils'
+import type { Project } from '@/sanity/types'
+import HeroInteractivo from './components/HeroInteractivo'
+import ModularSection from './components/ModularSection'
 
 export const revalidate = 60
 
-const tipoLabel: Record<string, string> = {
-  casa: 'Casa',
-  departamento: 'Depto.',
-  refaccion: 'Refacción',
-  local: 'Local',
-  trabajo: 'Trabajo',
-  cultural: 'Cultural',
-  otro: 'Proyecto',
-}
+const CARD_PALETTE = ['#F1E6D5', '#DD7845', '#949491', '#6B6B6E', '#E24F05', '#F1E6D5']
 
 export default async function Home() {
-  const [config, proyectosDestacados, servicios] = await Promise.all([
-    client.fetch<StudioConfig>(configQuery),
-    client.fetch<Project[]>(featuredProjectsQuery),
-    client.fetch<Service[]>(allServicesQuery),
-  ])
-
-  const serviciosPrincipales = servicios.filter(s => s.tipo === 'principal')
+  const proyectos = await safeFetch<Project[]>(featuredProjectsQuery) ?? []
 
   return (
     <>
       {/* ── Hero ───────────────────────────────────────── */}
       <section style={{
-        minHeight: '100svh',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
         borderBottom: '1px solid var(--rule)',
-        overflow: 'hidden',
-        paddingTop: '56px',
-      }} className="hero-grid">
-
-        {/* Left — text */}
+        paddingTop: 'var(--navbar-h, 88px)',
+      }}>
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          padding: 'var(--pad-x)',
-          paddingBottom: '56px',
-          borderRight: '1px solid var(--rule)',
-        }}>
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10.5px',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-            marginBottom: '32px',
-            display: 'block',
-          }}>
-            BA — ARQ
-          </span>
-          <h1 style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(40px, 5.4vw, 88px)',
-            fontWeight: 500,
-            lineHeight: 0.96,
-            letterSpacing: '-0.045em',
-            color: 'var(--ink)',
-            marginBottom: '40px',
-          }}>
-            {config?.lema ?? 'Arquitectura\nreal.'}
-          </h1>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <Link href="/proyectos" style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10.5px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--bg)',
-              background: 'var(--ink)',
-              padding: '10px 20px',
-              transition: 'opacity 0.2s ease',
-            }}>
-              Ver proyectos
-            </Link>
-            <a href={`https://wa.me/54${config?.whatsapp ?? '2215718737'}`} target="_blank" rel="noopener noreferrer"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10.5px',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--ink-mute)',
-                border: '1px solid var(--rule)',
-                padding: '10px 20px',
-                transition: 'border-color 0.2s ease, color 0.2s ease',
-              }}>
-              WhatsApp
-            </a>
-          </div>
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: '70vh',
+        }} className="hero-inner">
 
-          {/* Corner label */}
-          <span style={{
-            position: 'absolute',
-            bottom: '56px',
-            right: 'calc(50% + var(--pad-x))',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9px',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-          }}>
-            FIG. 01
-          </span>
-        </div>
-
-        {/* Right — modular planes */}
-        <div style={{ position: 'relative', background: 'var(--bg-alt)', overflow: 'hidden' }}>
-          {/* Grid background */}
+          {/* Left — text */}
           <div style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: 'linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px)',
-            backgroundSize: '56px 56px',
-          }} />
+            padding: '56px var(--pad-x)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            borderRight: '1px solid var(--rule)',
+          }}>
+            <div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '32px',
+              }}>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10.5px',
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}>
+                  <span style={{
+                    display: 'inline-block',
+                    width: '6px', height: '6px',
+                    background: 'var(--accent)',
+                    flexShrink: 0,
+                  }} />
+                  Estudio activo · 2018 — presente
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10.5px',
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                }}>
+                  001 / MANIFIESTO
+                </span>
+              </div>
 
-          {/* Modular planes */}
-          <div style={{ position: 'absolute', inset: 0 }}>
-            {/* p1 — iron block */}
+              <h1 style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(40px, 5.4vw, 88px)',
+                fontWeight: 500,
+                lineHeight: 0.96,
+                letterSpacing: '-0.045em',
+                color: 'var(--ink)',
+                margin: 0,
+                textWrap: 'balance',
+              } as React.CSSProperties}>
+                <span style={{ display: 'block' }}>El espacio</span>
+                <span style={{ display: 'block' }}>como{' '}
+                  <span style={{ color: 'var(--accent)' }}>límite</span>
+                </span>
+                <span style={{ display: 'block' }}>y como decisión.</span>
+              </h1>
+            </div>
+
+            {/* Meta block */}
             <div style={{
-              position: 'absolute',
-              top: '16.67%', left: '16.67%',
-              width: '41.67%', height: '33.33%',
-              background: 'var(--hierro)',
-            }} />
-            {/* p2 — brick accent */}
-            <div style={{
-              position: 'absolute',
-              top: '16.67%', left: '58.34%',
-              width: '8.33%', height: '33.33%',
-              background: 'var(--ladrillo)',
-            }} />
-            {/* p3 — stone block */}
-            <div style={{
-              position: 'absolute',
-              top: '50%', left: '8.33%',
-              width: '25%', height: '25%',
-              background: 'var(--piedra)',
-              opacity: 0.5,
-            }} />
-            {/* p4 — outline only */}
-            <div style={{
-              position: 'absolute',
-              top: '50%', left: '33.33%',
-              width: '33.33%', height: '16.67%',
-              border: '1px solid var(--rule)',
-            }} />
-            {/* p5 — brick desaturated small */}
-            <div style={{
-              position: 'absolute',
-              top: '66.67%', left: '66.67%',
-              width: '16.67%', height: '8.33%',
-              background: 'var(--ladrillo-d)',
-              opacity: 0.6,
-            }} />
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '18px 32px',
+              marginTop: '56px',
+              fontSize: '12px',
+              color: 'var(--ink-soft)',
+            }} className="hero-meta-grid">
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10.5px',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                  display: 'block',
+                  marginBottom: '4px',
+                }}>Enfoque</div>
+                Vivienda · Refacción · Comercial · Cultural
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10.5px',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                  display: 'block',
+                  marginBottom: '4px',
+                }}>Territorio</div>
+                CABA · GBA Norte · Río Negro · Neuquén
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10.5px',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-mute)',
+                  display: 'block',
+                  marginBottom: '4px',
+                }}>Director</div>
+                Joaquín Licera Vidal
+              </div>
+            </div>
           </div>
 
-          {/* Corner annotations */}
-          <span style={{
-            position: 'absolute', top: '24px', left: '24px',
-            fontFamily: 'var(--font-mono)', fontSize: '9px',
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-          }}>Sistema</span>
-          <span style={{
-            position: 'absolute', top: '24px', right: '24px',
-            fontFamily: 'var(--font-mono)', fontSize: '9px',
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            color: 'var(--accent)',
-          }}>Módulo 12</span>
-          <span style={{
-            position: 'absolute', bottom: '24px', right: '24px',
-            fontFamily: 'var(--font-mono)', fontSize: '9px',
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-          }}>Barda — 2025</span>
+          {/* Right — Interactive composition */}
+          <HeroInteractivo />
         </div>
       </section>
 
       {/* ── Stats ──────────────────────────────────────── */}
-      <section style={{ borderBottom: '1px solid var(--rule)' }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-        }} className="stats-grid">
-          {[
-            { num: '47', sup: '+', label: 'Proyectos' },
-            { num: '8', sup: 'yr', label: 'Trayectoria' },
-            { num: '12', sup: '', label: 'Ciudades' },
-            { num: '6.4k', sup: 'm²', label: 'Construidos' },
-          ].map((s, i) => (
-            <div key={i} style={{
-              padding: '32px var(--pad-x)',
-              borderRight: i < 3 ? '1px solid var(--rule)' : 'none',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2px', marginBottom: '6px' }}>
-                <span style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 'clamp(28px, 3vw, 44px)',
-                  fontWeight: 500,
-                  letterSpacing: '-0.04em',
-                  color: 'var(--ink)',
-                  lineHeight: 1,
-                }}>
-                  {s.num}
-                </span>
-                {s.sup && (
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '11px',
-                    color: 'var(--accent)',
-                    marginTop: '4px',
-                  }}>
-                    {s.sup}
-                  </span>
-                )}
-              </div>
-              <p style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10.5px',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--ink-mute)',
-              }}>
-                {s.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Proyectos destacados ───────────────────────── */}
-      {proyectosDestacados.length > 0 && (
-        <section style={{ borderBottom: '1px solid var(--rule)' }}>
-          {/* Section header */}
-          <div style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
-            padding: '0 var(--pad-x)',
-            height: '48px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid var(--rule)',
+      <section style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        borderBottom: '1px solid var(--rule)',
+      }} className="stats-grid">
+        {[
+          { num: '47', sup: '+',     label: 'Proyectos · 2018 — 2026' },
+          { num: '8',  sup: 'yr',    label: 'Trayectoria' },
+          { num: '12', sup: null,    label: 'Ciudades intervenidas' },
+          { num: '6.4',sup: 'k m²',  label: 'Superficie proyectada' },
+        ].map((s, i) => (
+          <div key={i} style={{
+            padding: '28px var(--pad-x)',
+            borderLeft: i > 0 ? '1px solid var(--rule)' : 'none',
           }}>
-            <span style={{
+            <div style={{
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 500,
+              fontSize: 'clamp(32px, 3.4vw, 52px)',
+              letterSpacing: '-0.03em',
+              lineHeight: 1,
+              color: 'var(--ink)',
+            }}>
+              {s.num}
+              {s.sup && (
+                <sup style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.5em',
+                  verticalAlign: 'top',
+                  color: 'var(--accent)',
+                  marginLeft: '2px',
+                  fontWeight: 500,
+                }}>
+                  {s.sup}
+                </sup>
+              )}
+            </div>
+            <p style={{
+              marginTop: '10px',
               fontFamily: 'var(--font-mono)',
               fontSize: '10.5px',
-              letterSpacing: '0.12em',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
               color: 'var(--ink-mute)',
             }}>
-              Proyectos
-            </span>
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* ── Obras seleccionadas ────────────────────────── */}
+      {proyectos.length > 0 && (
+        <>
+          {/* Section header */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '200px 1fr auto',
+            alignItems: 'flex-end',
+            gap: '32px',
+            padding: '56px var(--pad-x) 28px',
+            borderBottom: '1px solid var(--rule)',
+          }} className="section-head-grid">
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10.5px',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-mute)',
+            }}>
+              <strong style={{ color: 'var(--accent)', fontWeight: 400, marginRight: '8px' }}>03</strong>
+              SECCIÓN
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 500,
+              fontSize: 'clamp(28px, 3vw, 44px)',
+              letterSpacing: '-0.035em',
+              lineHeight: 1,
+              margin: 0,
+              color: 'var(--ink)',
+            }}>
+              Obras seleccionadas
+            </h2>
             <Link href="/proyectos" style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '10.5px',
-              letterSpacing: '0.1em',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
               color: 'var(--ink-mute)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
               transition: 'color 0.2s ease',
             }}>
-              Ver todos →
+              {String(proyectos.length).padStart(2, '0')} / 2018 — 2026 →
             </Link>
           </div>
 
+          {/* Projects grid */}
           <div style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))',
-            gap: 0,
-          }} className="cards-grid">
-            {proyectosDestacados.map((proyecto, i) => (
-              <ProjectCard key={proyecto._id} proyecto={proyecto} index={i + 1} priority={i === 0} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Servicios ─────────────────────────────────── */}
-      {serviciosPrincipales.length > 0 && (
-        <section style={{ borderBottom: '1px solid var(--rule)' }}>
-          {/* Section header */}
-          <div style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
-            padding: '0 var(--pad-x)',
-            height: '48px',
-            display: 'flex',
-            alignItems: 'center',
-            borderBottom: '1px solid var(--rule)',
-          }}>
-            <span style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10.5px',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: 'var(--ink-mute)',
-            }}>
-              Servicios
-            </span>
-          </div>
-
-          <div style={{
-            maxWidth: '1400px',
-            margin: '0 auto',
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-          }} className="services-grid">
-            {serviciosPrincipales.map((s, i) => (
-              <div key={s._id} style={{
-                padding: '32px var(--pad-x)',
-                borderRight: i % 3 < 2 ? '1px solid var(--rule)' : 'none',
-                borderBottom: i < serviciosPrincipales.length - (serviciosPrincipales.length % 3 || 3) ? '1px solid var(--rule)' : 'none',
-              }}>
-                <p style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10.5px',
-                  letterSpacing: '0.1em',
-                  color: 'var(--accent)',
-                  marginBottom: '12px',
-                }}>
-                  0{i + 1}
-                </p>
-                <h3 style={{
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: 'clamp(18px, 2vw, 24px)',
-                  fontWeight: 500,
-                  letterSpacing: '-0.025em',
-                  lineHeight: 1.1,
-                  color: 'var(--ink)',
-                  marginBottom: '12px',
-                }}>
-                  {s.titulo}
-                </h3>
-                {s.descripcion && (
-                  <p style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: '13px',
-                    color: 'var(--ink-mute)',
-                    lineHeight: 1.6,
-                  }}>
-                    {s.descripcion}
-                  </p>
-                )}
-              </div>
+            borderBottom: '1px solid var(--rule)',
+          }} className="cards-home-grid">
+            {proyectos.map((proyecto, i) => (
+              <ProjectCard
+                key={proyecto._id}
+                proyecto={proyecto}
+                index={i + 1}
+                priority={i === 0}
+                cardBg={CARD_PALETTE[i % CARD_PALETTE.length]}
+              />
             ))}
           </div>
-        </section>
+        </>
       )}
 
-      {/* ── CTA ───────────────────────────────────────── */}
-      <section style={{ background: 'var(--hierro)' }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '80px var(--pad-x)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '32px',
-        }}>
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10.5px',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'var(--piedra)',
-          }}>
-            ¿Tenés un proyecto?
-          </span>
-          <h2 style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(28px, 3.5vw, 52px)',
-            fontWeight: 500,
-            letterSpacing: '-0.04em',
-            lineHeight: 1.0,
-            color: 'var(--arena)',
-            maxWidth: '600px',
-          }}>
-            Trabajamos de forma cercana desde la primera consulta.
-          </h2>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <a href={`https://wa.me/54${config?.whatsapp ?? '2215718737'}`} target="_blank" rel="noopener noreferrer"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10.5px',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--hierro)',
-                background: 'var(--arena)',
-                padding: '12px 24px',
-                transition: 'opacity 0.2s ease',
-              }}>
-              WhatsApp
-            </a>
-            <Link href="/contacto" style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10.5px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--arena)',
-              border: '1px solid rgba(248,240,229,0.25)',
-              padding: '12px 24px',
-              transition: 'border-color 0.2s ease',
-            }}>
-              Contacto
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ── Sistema Modular ────────────────────────────── */}
+      <ModularSection />
 
       <style>{`
         @media (max-width: 900px) {
-          .hero-grid { grid-template-columns: 1fr !important; min-height: auto !important; }
-          .hero-grid > div:first-child { min-height: 70svh; border-right: none !important; border-bottom: 1px solid var(--rule); }
-          .hero-grid > div:last-child { min-height: 40svh; }
+          .hero-inner { grid-template-columns: 1fr !important; min-height: auto !important; }
+          .hero-inner > div:first-child { min-height: 70svh; border-right: none !important; border-bottom: 1px solid var(--rule); }
+          .hero-graphic-interactive { min-height: 50svh; }
+          .hero-meta-grid { grid-template-columns: 1fr 1fr !important; }
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .stats-grid > div:nth-child(2) { border-right: none !important; }
-          .stats-grid > div:nth-child(3) { border-top: 1px solid var(--rule); }
-          .stats-grid > div:nth-child(4) { border-top: 1px solid var(--rule); border-right: none !important; }
-          .services-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .services-grid > div:nth-child(even) { border-right: none !important; }
+          .stats-grid > div:nth-child(2) { border-left: 1px solid var(--rule); }
+          .stats-grid > div:nth-child(3) { border-top: 1px solid var(--rule); border-left: none !important; }
+          .stats-grid > div:nth-child(4) { border-top: 1px solid var(--rule); }
+          .section-head-grid { grid-template-columns: auto 1fr auto !important; }
+          .cards-home-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (max-width: 600px) {
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .services-grid { grid-template-columns: 1fr !important; }
-          .services-grid > div { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+          .hero-meta-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .section-head-grid { grid-template-columns: 1fr !important; padding-top: 32px !important; padding-bottom: 20px !important; }
+          .section-head-grid > *:last-child { display: none; }
+          .cards-home-grid { grid-template-columns: 1fr !important; }
         }
-        .project-card-link { display: block; text-decoration: none; color: inherit; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-        .project-card-link:hover .card-arrow { transform: translateX(4px); }
-        .project-card-link:hover .card-img { transform: scale(1.04); }
-        .card-img { transition: transform 0.8s cubic-bezier(.2,.7,.2,1); }
+        .proj-card-link {
+          display: block; text-decoration: none; color: inherit;
+          border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+          margin-right: -1px; margin-bottom: -1px;
+        }
+        .proj-card-link:hover .card-img-inner { transform: scale(1.04); }
+        .proj-card-link:hover .card-arrow { transform: translateX(4px); }
+        .card-img-inner { transition: transform 0.8s cubic-bezier(.2,.7,.2,1); }
         .card-arrow { transition: transform 0.25s ease; }
       `}</style>
     </>
@@ -453,52 +300,49 @@ function ProjectCard({
   proyecto,
   index,
   priority,
+  cardBg,
 }: {
   proyecto: Project
   index: number
   priority?: boolean
+  cardBg: string
 }) {
   const imgUrl = proyecto.imagenPrincipal
     ? urlForImage(proyecto.imagenPrincipal).width(800).height(600).fit('crop').url()
     : null
 
-  const tipo = proyecto.tipo ? tipoLabel[proyecto.tipo] : null
+  const tipo = proyecto.tipo ? TIPO_LABELS_SHORT[proyecto.tipo] : null
 
   return (
-    <Link href={`/proyectos/${proyecto.slug.current}`} className="project-card-link">
-      <article>
-        {/* Top meta */}
+    <Link href={`/proyectos/${proyecto.slug.current}`} className="proj-card-link">
+      <article style={{ background: cardBg }}>
+        {/* Meta top */}
         <div style={{
-          padding: '10px 16px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid var(--rule)',
+          display: 'grid',
+          gridTemplateColumns: '1fr auto',
+          padding: '14px 16px 10px',
+          borderBottom: '1px solid rgba(15,15,16,0.10)',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
         }}>
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9.5px',
-            letterSpacing: '0.1em',
-            color: 'var(--ink-mute)',
-          }}>
-            {String(index).padStart(2, '0')}
+          <span>
+            <span style={{ color: 'var(--accent)' }}>{String(index).padStart(3, '0')}</span>
+            {' · '}{proyecto.anio}
           </span>
-          <span style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9.5px',
-            letterSpacing: '0.06em',
-            color: 'var(--ink-mute)',
-          }}>
-            {[proyecto.ciudad, proyecto.anio].filter(Boolean).join(' · ')}
-          </span>
+          <span>{proyecto.ciudad}</span>
         </div>
 
-        {/* Image */}
+        {/* Frame */}
         <div style={{
           position: 'relative',
+          width: '100%',
           aspectRatio: '4/3',
-          background: 'var(--card-bg)',
           overflow: 'hidden',
+          background: cardBg,
+          isolation: 'isolate',
         }}>
           {imgUrl ? (
             <Image
@@ -508,80 +352,59 @@ function ProjectCard({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               priority={priority}
-              className="card-img"
+              className="card-img-inner"
             />
           ) : (
-            <div style={{
-              width: '100%', height: '100%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'var(--card-bg)',
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '9.5px',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'var(--piedra)',
-              }}>
-                Sin imagen
-              </span>
+            <div style={{ position: 'absolute', inset: 0, background: cardBg }}>
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: `linear-gradient(180deg, color-mix(in srgb, ${cardBg} 80%, white 20%) 0%, ${cardBg} 50%, color-mix(in srgb, ${cardBg} 80%, black 14%) 100%)`,
+              }} />
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(90deg, transparent 32%, #E24F05 32%, #E24F05 32.4%, transparent 32.4%), linear-gradient(180deg, transparent 60%, rgba(15,15,16,0.6) 60%)',
+                opacity: 0.55,
+                mixBlendMode: 'multiply',
+              }} />
             </div>
           )}
-          {/* Corner tag */}
           {tipo && (
             <span style={{
-              position: 'absolute',
-              bottom: '12px',
-              right: '12px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '9px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--arena)',
-              background: 'rgba(15,15,16,0.65)',
-              padding: '3px 8px',
+              position: 'absolute', top: '12px', left: '12px',
+              fontFamily: 'var(--font-mono)', fontSize: '9.5px',
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: 'var(--arena)', background: 'rgba(15,15,16,0.8)',
+              padding: '3px 6px', zIndex: 2,
             }}>
               {tipo}
             </span>
           )}
-          {/* Accent pin */}
           <span style={{
-            position: 'absolute',
-            top: '12px',
-            left: '12px',
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            background: 'var(--accent)',
+            position: 'absolute', top: '12px', right: '12px',
+            width: '8px', height: '8px',
+            background: 'var(--accent)', zIndex: 2,
           }} />
         </div>
 
         {/* Body */}
-        <div style={{
-          padding: '14px 16px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '1rem',
-        }}>
+        <div style={{ padding: '16px 16px 18px' }}>
           <h3 style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(16px, 1.5vw, 20px)',
             fontWeight: 500,
-            letterSpacing: '-0.025em',
-            lineHeight: 1.1,
+            fontSize: 'clamp(18px, 1.8vw, 22px)',
+            letterSpacing: '-0.035em',
+            lineHeight: 1.05,
             color: 'var(--ink)',
+            margin: 0,
           }}>
             {proyecto.titulo}
+            <span className="card-arrow" style={{
+              display: 'inline-block',
+              marginLeft: '6px',
+              color: 'var(--accent)',
+              fontFamily: 'var(--font-mono)',
+            }}>→</span>
           </h3>
-          <span className="card-arrow" style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '14px',
-            color: 'var(--ink-mute)',
-            flexShrink: 0,
-          }}>
-            →
-          </span>
         </div>
       </article>
     </Link>

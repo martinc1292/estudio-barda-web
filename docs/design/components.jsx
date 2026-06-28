@@ -1,6 +1,46 @@
 /* global React, ReactDOM */
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
+// =======================================================================
+// LOGO SYSTEM (per "Manual de identidad visual — Barda Arquitectura, 2026")
+// =======================================================================
+const BD_VARIANTS = {
+  color:        { top: "#DD7845", bot: "#E24F05" },
+  "mono-dark":  { top: "#6B6B6E", bot: "#0F0F10" },
+  "mono-light": { top: "#FFFFFF", bot: "#949491" },
+  "mono-white": { top: "#F8F0E5", bot: "#FFFFFF" },
+  "mono-black": { top: "#0F0F10", bot: "#0F0F10" },
+};
+function Isotipo({ size = 32, variant = "color" }) {
+  const { top, bot } = BD_VARIANTS[variant] || BD_VARIANTS.color;
+  const w = size, h = Math.round((size * 12) / 20);
+  return (
+    <svg width={w} height={h} viewBox="0 0 20 12"
+         xmlns="http://www.w3.org/2000/svg"
+         role="img" aria-label="Barda Arquitectura — isotipo"
+         style={{ display: "block", flexShrink: 0 }}
+         shapeRendering="crispEdges">
+      <path d="M0 6 L10 6 L10 7 L20 7 L20 12 L0 12 Z" fill={bot}/>
+      <rect x="10" y="0" width="10" height="5" fill={top}/>
+    </svg>
+  );
+}
+function LogoHorizontal({ height = 32, variant = "color", inkColor }) {
+  const ink = inkColor
+    || (variant === "mono-light" || variant === "mono-white" ? "#F8F0E5" : "#0F0F10");
+  const isoSize = Math.round(height * 20 / 12);
+  const gap = Math.round(height * 0.32);
+  return (
+    <div className="bd-logo bd-logo-h" style={{ display: "flex", alignItems: "stretch", gap }}>
+      <Isotipo size={isoSize} variant={variant} />
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", color: ink, lineHeight: 1 }}>
+        <div style={{ fontFamily: "Inter, sans-serif", fontWeight: 800, fontSize: height * 0.72, letterSpacing: "-0.035em", lineHeight: 0.85 }}>BARDA</div>
+        <div style={{ fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: height * 0.19, letterSpacing: "0.06em", textAlign: "right" }}>ARQUITECTURA</div>
+      </div>
+    </div>
+  );
+}
+
 // ====== Cursor custom ======
 function CustomCursor({ enabled }) {
   const dotRef = useRef(null);
@@ -72,9 +112,8 @@ function TopBar({ lang, setLang, route, setRoute, t }) {
           <span className={route==="contact" ? "active nav-link" : "nav-link"}>{t.nav.contact}</span>
         </a>
       </div>
-      <div className="brand" data-cursor="link" onClick={() => setRoute("index")}>
-        <span className="b-mark">Barda</span>
-        <span className="b-sub">{t.nav.studio}</span>
+      <div className="brand" data-cursor="link" onClick={() => setRoute("index")} style={{cursor:"none"}}>
+        <LogoHorizontal height={24} />
       </div>
       <div className="right">
         <span className="mono" style={{color:"var(--ink-mute)"}}>BA · AR · {t.since}</span>

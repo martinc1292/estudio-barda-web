@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
-import { client } from '@/sanity/lib/client'
-import { urlForImage } from '@/sanity/lib/image'
-import { configQuery } from '@/sanity/lib/queries'
-import type { StudioConfig } from '@/sanity/types'
+import { safeFetch } from '@/sanity/lib/client'
+import { allServicesQuery } from '@/sanity/lib/queries'
+import type { Service } from '@/sanity/types'
+import ModularSection from '@/app/components/ModularSection'
 
 export const revalidate = 60
 
@@ -12,165 +11,164 @@ export const metadata: Metadata = {
   description: 'Barda Arquitectura — estudio de arquitectura en Buenos Aires.',
 }
 
-export default async function SobreNosotrosPage() {
-  const config = await client.fetch<StudioConfig>(configQuery)
+const SERVICIOS_FALLBACK = [
+  'Vivienda',
+  'Refacción y ampliación',
+  'Comercial y oficinas',
+  'Cultural / Instalaciones',
+  'Concursos',
+  'Propuestas urbanas',
+]
 
-  const fotoUrl = config?.fotoArquitecto
-    ? urlForImage(config.fotoArquitecto).width(800).height(1000).fit('crop').url()
-    : null
+export default async function SobreNosotrosPage() {
+  const servicios = await safeFetch<Service[]>(allServicesQuery) ?? []
+  const serviciosPrincipales = servicios.filter(s => s.tipo === 'principal')
+  const titulos = serviciosPrincipales.length > 0
+    ? serviciosPrincipales.map(s => s.titulo)
+    : SERVICIOS_FALLBACK
 
   return (
-    <div style={{ paddingTop: '56px' }}>
+    <div style={{ paddingTop: 'var(--navbar-h, 88px)' }}>
 
-      {/* ── Page header ──────────────────────────────── */}
+      {/* Section header 00 — Estudio */}
       <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        padding: '48px var(--pad-x) 40px',
+        display: 'grid',
+        gridTemplateColumns: '200px 1fr auto',
+        alignItems: 'flex-end',
+        gap: '32px',
+        padding: '56px var(--pad-x) 28px',
         borderBottom: '1px solid var(--rule)',
-      }}>
-        <span style={{
+      }} className="studio-section-head">
+        <div style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '10.5px',
-          letterSpacing: '0.14em',
+          letterSpacing: '0.16em',
           textTransform: 'uppercase',
           color: 'var(--ink-mute)',
-          display: 'block',
-          marginBottom: '12px',
         }}>
-          Estudio
-        </span>
+          <strong style={{ color: 'var(--accent)', fontWeight: 400, marginRight: '8px' }}>00</strong>
+          SECCIÓN
+        </div>
         <h1 style={{
           fontFamily: 'var(--font-sans)',
-          fontSize: 'clamp(36px, 5vw, 72px)',
           fontWeight: 500,
-          letterSpacing: '-0.04em',
-          lineHeight: 1.0,
+          fontSize: 'clamp(28px, 3vw, 44px)',
+          letterSpacing: '-0.035em',
+          lineHeight: 1,
+          margin: 0,
           color: 'var(--ink)',
         }}>
-          Barda Arquitectura
+          Estudio
         </h1>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
+        }}>
+          MANIFIESTO / 2026
+        </div>
       </div>
 
-      {/* ── Bio del estudio ───────────────────────────── */}
-      <section style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        padding: '56px var(--pad-x)',
+      {/* Modular section */}
+      <ModularSection />
+
+      {/* Section header 01 — Servicios */}
+      <div style={{
         display: 'grid',
-        gridTemplateColumns: '1.4fr 1fr',
-        gap: '64px',
-        alignItems: 'start',
+        gridTemplateColumns: '200px 1fr auto',
+        alignItems: 'flex-end',
+        gap: '32px',
+        padding: '56px var(--pad-x) 28px',
         borderBottom: '1px solid var(--rule)',
-      }} className="bio-grid">
-        <div>
-          <p style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(18px, 2vw, 24px)',
-            fontWeight: 400,
-            lineHeight: 1.55,
-            letterSpacing: '-0.01em',
-            color: 'var(--ink)',
-          }}>
-            {config?.bioEstudio}
-          </p>
-        </div>
-
-        <div style={{ borderLeft: '1px solid var(--rule)', paddingLeft: '40px' }} className="bio-info">
-          <p style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9.5px',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-            marginBottom: '16px',
-          }}>
-            Zona de trabajo
-          </p>
-          <p style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: '14px',
-            color: 'var(--ink-soft)',
-            lineHeight: 1.7,
-          }}>
-            Ciudad de Buenos Aires y zona norte del Gran Buenos Aires. También desarrollamos proyectos en Río Negro, Neuquén y Misiones.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Arquitecto ───────────────────────────────── */}
-      <section style={{ borderBottom: '1px solid var(--rule)' }}>
+      }} className="studio-section-head">
         <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '56px var(--pad-x)',
-          display: 'grid',
-          gridTemplateColumns: fotoUrl ? '1fr 1fr' : '1fr',
-          gap: '56px',
-          alignItems: 'start',
-        }} className="arquitecto-grid">
-          <div>
-            <span style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.16em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
+        }}>
+          <strong style={{ color: 'var(--accent)', fontWeight: 400, marginRight: '8px' }}>01</strong>
+          SECCIÓN
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-sans)',
+          fontWeight: 500,
+          fontSize: 'clamp(28px, 3vw, 44px)',
+          letterSpacing: '-0.035em',
+          lineHeight: 1,
+          margin: 0,
+          color: 'var(--ink)',
+        }}>
+          Servicios
+        </h2>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10.5px',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-mute)',
+        }}>
+          {String(titulos.length).padStart(2, '0')} ÁREAS
+        </div>
+      </div>
+
+      {/* Services grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        borderBottom: '1px solid var(--rule)',
+      }} className="servicios-grid">
+        {titulos.map((titulo, i) => (
+          <div key={i} style={{
+            borderRight: '1px solid var(--rule)',
+            borderBottom: '1px solid var(--rule)',
+            marginRight: '-1px',
+            marginBottom: '-1px',
+            background: 'var(--bg-alt)',
+          }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              padding: '14px 16px 10px',
+              borderBottom: '1px solid var(--rule-soft)',
               fontFamily: 'var(--font-mono)',
-              fontSize: '9.5px',
-              letterSpacing: '0.14em',
+              fontSize: '10.5px',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
               color: 'var(--ink-mute)',
-              display: 'block',
-              marginBottom: '8px',
             }}>
-              Arquitecto
-            </span>
-            <h2 style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(22px, 2.5vw, 36px)',
-              fontWeight: 500,
-              letterSpacing: '-0.035em',
-              lineHeight: 1.05,
-              color: 'var(--ink)',
-              marginBottom: '32px',
-            }}>
-              Joaquín Licera Vidal
-            </h2>
-
-            <div style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '14px',
-              color: 'var(--ink-mute)',
-              lineHeight: 1.75,
-            }}>
-              {config?.bioArquitecto?.split('\n\n').map((párrafo, i) => (
-                <p key={i} style={{ marginBottom: '1.25rem' }}>
-                  {párrafo}
-                </p>
-              ))}
+              <span style={{ color: 'var(--accent)' }}>{String(i + 1).padStart(3, '0')}</span>
+              <span>SERVICIO</span>
+            </div>
+            <div style={{ padding: '32px 16px 40px' }}>
+              <h3 style={{
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 500,
+                fontSize: '28px',
+                letterSpacing: '-0.035em',
+                lineHeight: 1.1,
+                color: 'var(--ink)',
+                margin: 0,
+              }}>
+                {titulo}
+              </h3>
             </div>
           </div>
-
-          {fotoUrl && (
-            <div style={{
-              position: 'relative',
-              aspectRatio: '4/5',
-              overflow: 'hidden',
-              background: 'var(--card-bg)',
-            }}>
-              <Image
-                src={fotoUrl}
-                alt={config?.fotoArquitecto?.alt ?? 'Joaquín Licera Vidal'}
-                fill
-                style={{ objectFit: 'cover' }}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-          )}
-        </div>
-      </section>
+        ))}
+      </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          .bio-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-          .bio-info { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--rule); padding-top: 32px !important; }
-          .arquitecto-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+        @media (max-width: 900px) {
+          .studio-section-head { grid-template-columns: auto 1fr auto !important; }
+          .servicios-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 600px) {
+          .studio-section-head { grid-template-columns: 1fr !important; }
+          .studio-section-head > *:last-child { display: none; }
+          .servicios-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </div>

@@ -27,6 +27,35 @@
 
   /* Spacing rhythm */
   --pad-x:       clamp(20px, 3vw, 56px);
+
+  /* Navbar height (mobile first) */
+  --navbar-h: 56px;
+}
+
+@media (min-width: 768px) {
+  :root { --navbar-h: 88px; }
+}
+
+/* ─── Temas ───────────────────────────────────────────── */
+body.theme-dark {
+  --bg:       var(--hierro);
+  --bg-alt:   #1A1A1B;
+  --ink:      var(--arena);
+  --ink-soft: #C9C8C5;
+  --ink-mute: var(--piedra);
+  --rule:     rgba(248, 240, 229, 0.14);
+  --rule-soft:rgba(248, 240, 229, 0.08);
+  --card-bg:  #1A1A1B;
+}
+body.theme-stone {
+  --bg:       var(--piedra);
+  --bg-alt:   var(--hormigon);
+  --ink:      var(--arena);
+  --ink-soft: #DDD9D2;
+  --ink-mute: rgba(248, 240, 229, 0.6);
+  --rule:     rgba(248, 240, 229, 0.18);
+  --rule-soft:rgba(248, 240, 229, 0.10);
+  --card-bg:  var(--hormigon);
 }
 
 /* ─── Reset ───────────────────────────────────────────── */
@@ -80,6 +109,30 @@ img, video {
 ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--piedra); }
 
+/* ─── Accessibility ───────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  z-index: 9999;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ─── Utility ─────────────────────────────────────────── */
 .mono {
   font-family: var(--font-mono);
@@ -98,3 +151,117 @@ img, video {
   border: none;
   border-top: 1px solid var(--rule);
 }
+
+/* ─── Hero parallax — CSS @property + keyframes ───────── */
+@property --idle-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --idle-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+@keyframes floatA {
+  0%, 100% { --idle-x: 0px;  --idle-y: 0px; }
+  50%      { --idle-x: 3px;  --idle-y: -4px; }
+}
+@keyframes floatB {
+  0%, 100% { --idle-x: 0px;  --idle-y: 0px; }
+  50%      { --idle-x: -4px; --idle-y: 3px; }
+}
+@keyframes floatC {
+  0%, 100% { --idle-x: 0px; --idle-y: 0px; }
+  50%      { --idle-x: 2px; --idle-y: 4px; }
+}
+
+/* Hero graphic container */
+.hero-graphic-interactive {
+  position: relative;
+  background: var(--bg-alt);
+  overflow: hidden;
+  --mx: 0; --my: 0; --prox: 0;
+  cursor: crosshair;
+}
+.hero-graphic-interactive .grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right,  var(--rule-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rule-soft) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform: translate3d(calc(var(--mx) * -4px), calc(var(--my) * -4px), 0);
+  opacity: calc(0.6 + var(--prox) * 0.4);
+  transition: opacity 0.3s ease;
+}
+.hero-graphic-interactive::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    240px circle at calc(50% + var(--mx) * 50%) calc(50% + var(--my) * 50%),
+    rgba(226, 79, 5, calc(var(--prox) * 0.10)),
+    transparent 70%
+  );
+}
+.hero-plane {
+  position: absolute;
+  --depth: 16; --rot: 0; --idle-x: 0px; --idle-y: 0px;
+  will-change: transform;
+  transform:
+    translate3d(
+      calc(var(--mx) * var(--depth) * 1px + var(--idle-x)),
+      calc(var(--my) * var(--depth) * 1px + var(--idle-y)),
+      0
+    )
+    rotate(calc(var(--mx) * var(--rot) * 1deg));
+  transition: filter 0.4s ease;
+}
+.hero-plane.p1 { animation: floatA 9.2s  ease-in-out infinite; }
+.hero-plane.p2 { animation: floatB 11.4s ease-in-out infinite; }
+.hero-plane.p3 { animation: floatC 8.6s  ease-in-out infinite; }
+.hero-plane.p4 { animation: floatA 10.1s ease-in-out infinite reverse; }
+.hero-plane.p5 { animation: floatB 12.8s ease-in-out infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-plane { animation: none !important; transform: none !important; }
+  .hero-graphic-interactive::after { display: none; }
+}
+
+/* ─── Modular diagram ─────────────────────────────────── */
+.modular-diagram {
+  position: relative;
+  aspect-ratio: 4/5;
+  background: var(--bg-alt);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+}
+.modular-diagram .grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right,  var(--rule-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rule-soft) 1px, transparent 1px);
+  background-size: 8.333% 8.333%;
+}
+.modular-diagram .mplane {
+  position: absolute;
+  transition: transform 0.8s cubic-bezier(.2,.7,.2,1);
+}
+
+/* ─── Theme switcher ──────────────────────────────────── */
+.theme-switcher {
+  position: fixed;
+  bottom: 16px; left: 16px;
+  z-index: 60;
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.theme-switcher button {
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-mute);
+  transition: color 0.2s ease;
+}
+.theme-switcher button + button { border-left: 1px solid var(--rule); }
+.theme-switcher button.active { color: var(--accent); }

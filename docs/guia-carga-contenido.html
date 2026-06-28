@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Carga de Contenido — Estudio Barda</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafafa;
+      --gray-100: #f4f4f4;
+      --gray-200: #e4e4e4;
+      --gray-400: #9a9a9a;
+      --gray-600: #5a5a5a;
+      --accent: #c8a96e;
+      --accent-light: #f0e4cc;
+      --danger: #b94040;
+      --success: #3a7a52;
+      --warn: #8a6a00;
+      --warn-bg: #fef8e7;
+      --font-sans: 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'Courier New', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--black);
+      color: var(--white);
+      padding: 2rem 1.5rem;
+      border-right: 1px solid #1a1a1a;
+    }
+
+    .sidebar-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .sidebar-sub {
+      font-size: 0.72rem;
+      color: var(--gray-400);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 0.5rem;
+      padding-left: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--gray-200);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+    }
+
+    .nav-item.active {
+      background: rgba(200,169,110,0.15);
+      color: var(--accent);
+    }
+
+    .nav-num {
+      font-size: 0.7rem;
+      color: var(--gray-400);
+      font-family: var(--font-mono);
+      min-width: 1.2rem;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 820px;
+      padding: 3rem 3.5rem;
+    }
+
+    /* ── HEADER ── */
+    .doc-header {
+      margin-bottom: 3.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .doc-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.25rem 0.6rem;
+      border-radius: 3px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .doc-intro {
+      font-size: 1.05rem;
+      color: var(--gray-600);
+      max-width: 580px;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 4rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      min-width: 1.8rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    p { margin-bottom: 1rem; color: var(--gray-600); }
+
+    /* ── STEPS ── */
+    .steps {
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0 1.25rem;
+      position: relative;
+    }
+
+    .step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 23px;
+      top: 48px;
+      bottom: 0;
+      width: 2px;
+      background: var(--gray-200);
+    }
+
+    .step-num {
+      counter-increment: step;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--black);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-body {
+      padding-bottom: 2rem;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      margin-top: 0.65rem;
+    }
+
+    .step-desc { color: var(--gray-600); font-size: 0.92rem; margin-bottom: 0.5rem; }
+
+    /* ── URL BOX ── */
+    .url-box {
+      background: var(--black);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── FIELD TABLE ── */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .field-table thead tr {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .field-table th {
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .field-table td {
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: top;
+      color: var(--gray-600);
+    }
+
+    .field-table tbody tr:hover td { background: var(--gray-100); }
+
+    .field-name {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    .badge-req {
+      background: #fee;
+      color: var(--danger);
+    }
+
+    .badge-opt {
+      background: #eef2ee;
+      color: var(--success);
+    }
+
+    .badge-rec {
+      background: var(--accent-light);
+      color: #7a5500;
+    }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 6px;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+    .callout-warn {
+      background: var(--warn-bg);
+      border-left: 3px solid #e6b800;
+      color: #6a5000;
+    }
+
+    .callout-tip {
+      background: #eef5f0;
+      border-left: 3px solid #5aaa72;
+      color: #2a5a38;
+    }
+
+    .callout-info {
+      background: #eef2fc;
+      border-left: 3px solid #5a82e0;
+      color: #2a3a8a;
+    }
+
+    .callout strong { display: block; margin-bottom: 0.2rem; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── IMAGE GUIDE ── */
+    .img-guide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .img-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .img-card-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .img-card-header.good { background: #eef5f0; color: var(--success); }
+    .img-card-header.bad { background: #fee; color: var(--danger); }
+
+    .img-card-body {
+      padding: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--gray-600);
+    }
+
+    .img-card-body ul { padding-left: 1.25rem; }
+    .img-card-body li { margin-bottom: 0.3rem; }
+
+    /* ── CATEGORY GRID ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.5rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .cat-item {
+      border: 1px solid var(--gray-200);
+      border-radius: 5px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+    }
+
+    .cat-key {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--gray-400);
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+
+    .cat-label { font-weight: 600; color: var(--black); }
+
+    /* ── CHECKLIST ── */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--gray-600);
+    }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--gray-200);
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      background: var(--white);
+    }
+
+    /* ── DIVIDER ── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 3rem 0;
+    }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.8rem;
+      color: var(--gray-400);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo { font-weight: 700; letter-spacing: 0.08em; color: var(--black); }
+
+    /* ── SCREENSHOT MOCKUP ── */
+    .screen-mock {
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .screen-mock-bar {
+      background: var(--gray-200);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-400); }
+    .dot:nth-child(1) { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+
+    .screen-mock-url {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      margin-left: 0.5rem;
+    }
+
+    .screen-mock-body {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.82rem;
+      color: var(--gray-600);
+      min-height: 80px;
+    }
+
+    /* ── INLINE CODE ── */
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      background: var(--gray-100);
+      color: var(--black);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      main { padding: 2rem 1.5rem; }
+      .img-guide { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">BARDA</div>
+    <div class="sidebar-sub">Guía de contenido</div>
+
+    <div class="nav-section">
+      <div class="nav-label">Inicio</div>
+      <a href="#intro" class="nav-item">
+        <span class="nav-num">00</span> ¿Qué es el Studio?
+      </a>
+      <a href="#acceso" class="nav-item">
+        <span class="nav-num">01</span> Cómo acceder
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Configuración</div>
+      <a href="#config" class="nav-item">
+        <span class="nav-num">02</span> Datos del estudio
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Proyectos</div>
+      <a href="#proyecto-nuevo" class="nav-item">
+        <span class="nav-num">03</span> Crear un proyecto
+      </a>
+      <a href="#campos" class="nav-item">
+        <span class="nav-num">04</span> Campos explicados
+      </a>
+      <a href="#imagenes" class="nav-item">
+        <span class="nav-num">05</span> Guía de imágenes
+      </a>
+      <a href="#home" class="nav-item">
+        <span class="nav-num">06</span> Destacar en home
+      </a>
+      <a href="#orden" class="nav-item">
+        <span class="nav-num">07</span> Ordenar proyectos
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Servicios</div>
+      <a href="#servicios" class="nav-item">
+        <span class="nav-num">08</span> Cargar servicios
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Extra</div>
+      <a href="#checklist" class="nav-item">
+        <span class="nav-num">09</span> Checklist de lanzamiento
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- HEADER -->
+    <header class="doc-header" id="intro">
+      <div class="doc-tag">Guía de uso — CMS</div>
+      <h1>Cómo cargar contenido<br>en el sitio de Barda</h1>
+      <p class="doc-intro">
+        Esta guía te explica paso a paso cómo administrar los proyectos, servicios
+        y la información del estudio desde el panel de edición. No necesitás saber programar.
+      </p>
+    </header>
+
+
+    <!-- SECCIÓN 00 — ¿QUÉ ES EL STUDIO? -->
+    <section class="section" id="intro">
+      <div class="section-header">
+        <span class="section-num">00</span>
+        <h2>¿Qué es el Studio y para qué sirve?</h2>
+      </div>
+
+      <p>
+        El sitio de Barda usa <strong>Sanity</strong>, un sistema de gestión de contenido (CMS).
+        Sanity tiene un panel visual llamado <strong>Studio</strong> desde el cual podés crear, editar
+        y eliminar contenido sin tocar ningún archivo de código.
+      </p>
+      <p>
+        Todo lo que cargues en el Studio aparece automáticamente en el sitio
+        en menos de un minuto.
+      </p>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div>
+          <strong>Qué podés gestionar</strong>
+          Desde el Studio controlás tres cosas: los <strong>proyectos</strong> del portfolio,
+          los <strong>servicios</strong> que ofrece el estudio, y la <strong>información general</strong>
+          (bio, contacto, redes).
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 01 — ACCESO -->
+    <section class="section" id="acceso">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Cómo acceder al Studio</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Abrí el Studio en el navegador</div>
+            <p class="step-desc">
+              El Studio está disponible en la siguiente dirección (una vez que el sitio esté publicado en producción):
+            </p>
+            <div class="url-box">https://tu-dominio.com/studio</div>
+            <p class="step-desc">
+              Mientras trabajás en desarrollo local, podés acceder en:
+            </p>
+            <div class="url-box">http://localhost:3000/studio</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Iniciá sesión con tu cuenta de Sanity</div>
+            <p class="step-desc">
+              Usá la cuenta con la que te registraste en <code>sanity.io</code>. Si es la primera vez,
+              el desarrollador tiene que haberte dado acceso al proyecto desde el panel de Sanity.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Ya estás dentro</div>
+            <p class="step-desc">
+              En la barra lateral izquierda del Studio vas a ver tres secciones:
+              <strong>Configuración</strong>, <strong>Proyectos</strong> y <strong>Servicios</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 02 — CONFIGURACIÓN -->
+    <section class="section" id="config">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Configurar los datos del estudio</h2>
+      </div>
+
+      <p>
+        Lo primero que tenés que hacer es completar la sección <strong>Configuración</strong>.
+        Esta información aparece en la página "Sobre Nosotros" y en el pie de página del sitio.
+      </p>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Hacelo primero</strong>
+          Si el sitio se publica sin completar Configuración, la página "Sobre Nosotros"
+          va a aparecer vacía.
+        </div>
+      </div>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Qué va ahí</th>
+            <th>Requerido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Nombre del estudio</td>
+            <td>El nombre completo, ej. <em>Estudio Barda</em></td>
+            <td><span class="badge badge-req">Sí</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Lema</td>
+            <td>Frase corta que define al estudio (aparece en el hero del home)</td>
+            <td><span class="badge badge-rec">Recomendado</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Bio del estudio</td>
+            <td>Descripción del estudio para la página "Sobre Nosotros"</td>
+            <td><span class="badge badge-rec">Recomendado</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Bio del arquitecto</td>
+            <td>Perfil personal del/la arquitecto/a principal</td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Foto del arquitecto</td>
+            <td>Foto de perfil para "Sobre Nosotros"</td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Email</td>
+            <td>Dirección de contacto, ej. <em>hola@estudiobarda.com</em></td>
+            <td><span class="badge badge-req">Sí</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">WhatsApp</td>
+            <td>Número con código de país sin el +, ej. <em>5491155550000</em></td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Instagram</td>
+            <td>Solo el nombre de usuario, sin la @, ej. <em>estudiobarda</em></td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Versión en inglés</strong>
+          Cada campo de texto tiene una versión en inglés (lema_en, bio_en, etc.).
+          Si el sitio va a ser bilingüe, completá también esos campos.
+          Si no, podés dejarlo vacío — el sitio va a mostrar el texto en español.
+        </div>
+      </div>
+
+      <p>Una vez que completaste todos los campos, hacé clic en el botón <strong>"Publicar"</strong> (arriba a la derecha, en verde). Sin publicar, los cambios no se ven en el sitio.</p>
+    </section>
+
+
+    <!-- SECCIÓN 03 — CREAR PROYECTO -->
+    <section class="section" id="proyecto-nuevo">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Cómo crear un proyecto nuevo</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Ir a "Proyectos" en la barra lateral</div>
+            <p class="step-desc">En el Studio, hacé clic en <strong>Proyectos</strong> en el menú izquierdo.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Crear uno nuevo</div>
+            <p class="step-desc">
+              Hacé clic en el botón con el ícono <strong>+</strong> (pencil/lápiz) o en
+              "New document" que aparece en la esquina superior derecha.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Completar los campos del formulario</div>
+            <p class="step-desc">
+              Se abre el formulario del proyecto. Completá los campos —
+              en la sección siguiente te explicamos cada uno en detalle.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Publicar</div>
+            <p class="step-desc">
+              Cuando terminés, hacé clic en el botón verde <strong>"Publicar"</strong>.
+              En un momento el proyecto aparece en el sitio.
+            </p>
+
+            <div class="callout callout-warn" style="margin-top: 0.75rem;">
+              <span class="callout-icon">⚠️</span>
+              <div>
+                <strong>No olvides publicar</strong>
+                Los cambios guardados pero no publicados son borradores — no se ven en el sitio.
+                El botón "Publicar" es el paso final e indispensable.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 04 — CAMPOS -->
+    <section class="section" id="campos">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Campos del proyecto — guía completa</h2>
+      </div>
+
+      <h3>Información básica</h3>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Qué va ahí</th>
+            <th>Requerido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Título</td>
+            <td>Nombre del proyecto, ej. <em>Casa Río Negro</em>. Evitá mayúsculas en todo el nombre; solo la primera letra.</td>
+            <td><span class="badge badge-req">Sí</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Slug</td>
+            <td>Se genera automáticamente al tipear el título. Es la URL del proyecto: <code>/proyectos/casa-rio-negro</code>. Podés editarlo si querés.</td>
+            <td><span class="badge badge-req">Sí</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Ciudad</td>
+            <td>Ciudad donde está el proyecto, ej. <em>Buenos Aires</em></td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Año</td>
+            <td>Año de finalización o de inicio, ej. <em>2024</em></td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Categorización</h3>
+
+      <p>El campo <strong>Tipo</strong> clasifica el proyecto y activa los filtros en la página de proyectos. Elegí el que mejor describe el trabajo:</p>
+
+      <div class="cat-grid">
+        <div class="cat-item">
+          <span class="cat-key">casa</span>
+          <span class="cat-label">Casa</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">departamento</span>
+          <span class="cat-label">Departamento</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">refacción</span>
+          <span class="cat-label">Refacción</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">local</span>
+          <span class="cat-label">Local</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">trabajo</span>
+          <span class="cat-label">Oficina / Trabajo</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">cultural</span>
+          <span class="cat-label">Cultural</span>
+        </div>
+        <div class="cat-item">
+          <span class="cat-key">otro</span>
+          <span class="cat-label">Otro</span>
+        </div>
+      </div>
+
+      <p>El campo <strong>Categoría</strong> indica si el proyecto es <em>principal</em> (obra completa, más visible) o <em>secundario</em> (refacción puntual, asesoramiento, etc.).</p>
+
+      <h3>Contenido / Descripciones</h3>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Qué va ahí</th>
+            <th>Requerido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Descripción corta</td>
+            <td>
+              Un resumen de hasta <strong>200 caracteres</strong>.
+              Aparece en la tarjeta del proyecto en la lista y en el home.
+              Sé conciso: superficie, año, tipo de trabajo.
+            </td>
+            <td><span class="badge badge-rec">Recomendado</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Descripción larga</td>
+            <td>
+              El texto completo que aparece dentro de la página del proyecto.
+              Podés usar negritas, listas y párrafos. Sin límite de extensión.
+            </td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Consejo para la descripción corta</strong>
+          Un buen formato es: <em>"Vivienda unifamiliar de 180 m² en zona residencial.
+          Arquitectura contemporánea con materiales naturales. 2023."</em>
+          Directo y con datos concretos.
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 05 — IMÁGENES -->
+    <section class="section" id="imagenes">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Guía de imágenes</h2>
+      </div>
+
+      <p>Las imágenes son lo más importante del portfolio. Seguí estas indicaciones para que el sitio se vea bien en todos los dispositivos.</p>
+
+      <h3>Imagen principal</h3>
+      <p>
+        Es la foto que representa al proyecto en la lista, en el home (si está destacado)
+        y como banner en la página del proyecto.
+        <strong>Es obligatoria.</strong>
+      </p>
+
+      <div class="img-guide">
+        <div class="img-card">
+          <div class="img-card-header good">✓ Hacé esto</div>
+          <div class="img-card-body">
+            <ul>
+              <li>Formato JPG o WebP</li>
+              <li>Mínimo <strong>1600 × 900 px</strong></li>
+              <li>Orientación horizontal (landscape)</li>
+              <li>Peso máximo recomendado: <strong>3 MB</strong></li>
+              <li>Alta calidad, bien iluminada</li>
+              <li>Completá el campo "Texto alternativo" (ej. <em>"Fachada principal Casa Río Negro"</em>)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="img-card">
+          <div class="img-card-header bad">✗ Evitá esto</div>
+          <div class="img-card-body">
+            <ul>
+              <li>Imágenes verticales como principal (se recortan raro)</li>
+              <li>Archivos PNG sin comprimir (pesan mucho)</li>
+              <li>Resolución menor a 800 px de ancho</li>
+              <li>Fotos en obras sin terminar como imagen principal</li>
+              <li>Archivos con nombres como <em>IMG_4892.jpg</em> — no afecta la imagen pero es difícil de organizar</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Hotspot — punto de enfoque</strong>
+          Cuando subís la imagen principal, podés arrastrar el punto de enfoque (hotspot)
+          sobre la parte más importante de la foto. Así, cuando el sitio recorta la imagen
+          en distintos tamaños, siempre va a mostrar la parte correcta.
+        </div>
+      </div>
+
+      <h3>Galería de fotos</h3>
+      <p>
+        Son todas las fotos adicionales que aparecen en la página interna del proyecto.
+        Podés subir tantas como quieras.
+      </p>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Recomendación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Cantidad</td>
+            <td>Entre 6 y 20 fotos por proyecto es lo ideal. Menos de 6 se ve escaso; más de 20 puede cansar.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Orden</td>
+            <td>El orden en que las subís es el orden en que aparecen. Empezá con las más impactantes.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Variedad</td>
+            <td>Incluí exterior, interior, detalles y si tenés, vistas nocturnas o en distintas estaciones.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Tamaño</td>
+            <td>Mínimo 1200 px de ancho. JPG comprimido, no más de 2 MB por foto.</td>
+          </tr>
+          <tr>
+            <td class="field-name">Alt text</td>
+            <td>Completar el "Texto alternativo" de cada foto mejora el SEO y la accesibilidad.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- SECCIÓN 06 — DESTACAR EN HOME -->
+    <section class="section" id="home">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Destacar proyectos en el home</h2>
+      </div>
+
+      <p>
+        El inicio del sitio muestra una selección de proyectos "destacados".
+        Para que un proyecto aparezca ahí, tenés que activar la opción
+        <strong>"Destacado en home"</strong> en su formulario.
+      </p>
+
+      <div class="screen-mock">
+        <div class="screen-mock-bar">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span class="screen-mock-url">Studio → Proyectos → Casa Río Negro</span>
+        </div>
+        <div class="screen-mock-body">
+          <div style="display: flex; align-items: center; gap: 0.75rem; background: #fff; border: 1px solid #e4e4e4; border-radius: 5px; padding: 0.75rem 1rem; margin-top: 0.25rem;">
+            <div style="width: 36px; height: 20px; border-radius: 10px; background: #3a7a52; position: relative;">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #fff; position: absolute; top: 2px; right: 2px;"></div>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.85rem; color: #0a0a0a;">Destacado en home</div>
+              <div style="font-size: 0.75rem; color: #9a9a9a;">Este proyecto aparece en la sección de proyectos del inicio</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Cuántos destacar</strong>
+          Destacá entre <strong>3 y 6 proyectos</strong>. Si destacás demasiados,
+          el home pierde impacto y queda sobrecargado. Elegí los trabajos más representativos
+          y visualmente potentes.
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 07 — ORDEN -->
+    <section class="section" id="orden">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Ordenar los proyectos</h2>
+      </div>
+
+      <p>
+        Los proyectos se muestran en el orden que vos definís, usando el campo <strong>"Orden"</strong>
+        (un número). El proyecto con el número más bajo aparece primero.
+      </p>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Proyecto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>1</code></td>
+            <td>→ Aparece primero</td>
+          </tr>
+          <tr>
+            <td><code>2</code></td>
+            <td>→ Aparece segundo</td>
+          </tr>
+          <tr>
+            <td><code>10</code></td>
+            <td>→ Aparece décimo</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Truco: usá saltos de 10</strong>
+          Numerá los proyectos de 10 en 10 (10, 20, 30…). Así, si después querés insertar
+          uno en el medio, podés poner 15 sin tener que renumerar todo.
+        </div>
+      </div>
+
+      <p>Si dos proyectos tienen el mismo número de orden, el sistema los ordena por año (más reciente primero).</p>
+    </section>
+
+
+    <!-- SECCIÓN 08 — SERVICIOS -->
+    <section class="section" id="servicios">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Cargar los servicios del estudio</h2>
+      </div>
+
+      <p>
+        Los servicios aparecen en la página de inicio y en la página "Sobre Nosotros".
+        Se cargan de la misma forma que los proyectos, desde la sección
+        <strong>Servicios</strong> en el Studio.
+      </p>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Qué va ahí</th>
+            <th>Requerido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Título</td>
+            <td>Nombre del servicio, ej. <em>Proyecto y dirección de obra</em></td>
+            <td><span class="badge badge-req">Sí</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Descripción</td>
+            <td>Un párrafo corto explicando en qué consiste el servicio</td>
+            <td><span class="badge badge-rec">Recomendado</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Tipo</td>
+            <td>
+              <strong>Principal</strong> → servicios core del estudio<br>
+              <strong>Complementario</strong> → servicios de apoyo o adicionales
+            </td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Orden</td>
+            <td>Número para controlar el orden de aparición (igual que en proyectos)</td>
+            <td><span class="badge badge-opt">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>¿Cuántos servicios cargar?</strong>
+          Entre 3 y 6 servicios es lo ideal. Más de eso puede abrumar al visitante.
+          Agrupá servicios similares en uno solo si hace falta.
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECCIÓN 09 — CHECKLIST -->
+    <section class="section" id="checklist">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Checklist antes del lanzamiento</h2>
+      </div>
+
+      <p>Antes de que el sitio sea público, asegurate de tener esto completo:</p>
+
+      <h3>Configuración del estudio</h3>
+      <ul class="checklist">
+        <li><div class="check-box"></div> Nombre del estudio completado</li>
+        <li><div class="check-box"></div> Lema / tagline cargado</li>
+        <li><div class="check-box"></div> Bio del estudio escrita</li>
+        <li><div class="check-box"></div> Email de contacto</li>
+        <li><div class="check-box"></div> Instagram y/o WhatsApp (si aplica)</li>
+        <li><div class="check-box"></div> Foto del arquitecto subida</li>
+      </ul>
+
+      <h3>Proyectos</h3>
+      <ul class="checklist">
+        <li><div class="check-box"></div> Al menos 6 proyectos publicados</li>
+        <li><div class="check-box"></div> Cada proyecto tiene imagen principal</li>
+        <li><div class="check-box"></div> Cada proyecto tiene descripción corta</li>
+        <li><div class="check-box"></div> Entre 3 y 6 proyectos marcados como "Destacado en home"</li>
+        <li><div class="check-box"></div> Todos los proyectos tienen un número de Orden asignado</li>
+        <li><div class="check-box"></div> Las galerías de fotos están completas</li>
+      </ul>
+
+      <h3>Servicios</h3>
+      <ul class="checklist">
+        <li><div class="check-box"></div> Al menos 3 servicios publicados</li>
+        <li><div class="check-box"></div> Cada servicio tiene título y descripción</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>¿No podés imprimir? Abrí en otra pestaña</strong>
+          Para usar esta guía mientras trabajás en el Studio, abrila en una pestaña
+          del navegador al lado del Studio. Podés tenerlas lado a lado en la pantalla.
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <footer class="doc-footer">
+      <div>
+        <div class="footer-logo">ESTUDIO BARDA</div>
+        <div>Guía de carga de contenido — CMS Sanity</div>
+      </div>
+      <div>Generado para uso interno del estudio</div>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.section[id], header[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

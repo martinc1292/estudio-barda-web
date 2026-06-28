@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { client } from '@/sanity/lib/client'
+import { safeFetch } from '@/sanity/lib/client'
 import { allProjectsQuery } from '@/sanity/lib/queries'
 import type { Project } from '@/sanity/types'
 import ProyectosClient from './ProyectosClient'
@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 }
 
 export default async function ProyectosPage() {
-  const proyectos = await client.fetch<Project[]>(allProjectsQuery)
+  const proyectos = await safeFetch<Project[]>(allProjectsQuery) ?? []
 
   return (
-    <div style={{ paddingTop: '56px', borderTop: '1px solid var(--rule)' }}>
+    <div style={{ paddingTop: 'var(--navbar-h, 88px)', borderTop: '1px solid var(--rule)' }}>
       {/* Page header */}
       <div style={{
         maxWidth: '1400px',
