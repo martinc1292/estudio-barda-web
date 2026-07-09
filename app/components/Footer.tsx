@@ -139,7 +139,7 @@ export default async function Footer() {
             Sistema
           </p>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {['Inter / IBM Plex Mono', 'Ladrillo #E24F05', 'Identidad / 2026'].map(item => (
+            {['Archivo / IBM Plex Mono', 'Ladrillo #E24F05', 'Identidad / 2026'].map(item => (
               <li key={item} style={{ padding: '3px 0', color: 'var(--ink-soft)' }}>{item}</li>
             ))}
           </ul>

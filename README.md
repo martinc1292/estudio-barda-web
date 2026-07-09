@@ -93,5 +93,6 @@ sanity/
   schemas/
 docs/
   plan-desarrollo-barda.md
+  guia-pruebas.md
   guia-carga-contenido.html
 ```

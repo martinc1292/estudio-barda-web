@@ -1,6 +1,6 @@
 // Isotipo oficial Barda — Manual de identidad visual 2026
 // Dos planos con desplazamiento: inferior (ladrillo) + superior derecho (ladrillo desat)
-// ViewBox 20×12 (ratio 5:3)
+// ViewBox 26×18 (manual p. 02.2 / 05.1)
 
 const VARIANTS: Record<string, { top: string; bot: string }> = {
   color:        { top: '#DD7845', bot: '#E24F05' },
@@ -25,13 +25,13 @@ export default function Isotipo({
 }: IsotipoProps) {
   const { top, bot } = VARIANTS[variant] ?? VARIANTS.color
   const w = size
-  const h = Math.round((size * 12) / 20)
+  const h = Math.round((size * 18) / 26)
 
   return (
     <svg
       width={w}
       height={h}
-      viewBox="0 0 20 12"
+      viewBox="0 0 26 18"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label={title}
@@ -39,10 +39,10 @@ export default function Isotipo({
       className={className}
       style={{ display: 'block', flexShrink: 0 }}
     >
-      {/* Plano inferior + apoyo — forma de L */}
-      <path d="M0 6 L10 6 L10 7 L20 7 L20 12 L0 12 Z" fill={bot} />
       {/* Plano superior — desat, alineado a la derecha */}
-      <rect x="10" y="0" width="10" height="5" fill={top} />
+      <rect x="9" y="0" width="17" height="6.4" fill={top} />
+      {/* Plano inferior — ladrillo, izquierda, más ancho (gap = fondo visible) */}
+      <rect x="0" y="8" width="20" height="10" fill={bot} />
     </svg>
   )
 }

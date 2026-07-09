@@ -22,7 +22,7 @@
   --card-bg:     var(--arena-alt);
 
   /* Typography */
-  --font-sans:   'Inter', system-ui, sans-serif;
+  --font-sans:   'Archivo', system-ui, sans-serif;
   --font-mono:   'IBM Plex Mono', 'Courier New', monospace;
 
   /* Spacing rhythm */

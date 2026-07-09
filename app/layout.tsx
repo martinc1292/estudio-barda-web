@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import { SITE_URL } from "@/app/lib/proyecto-utils";
 
-const inter = Inter({
+// Sans de marca — Archivo (grotesca libre, alternativa a Neue Haas Display del manual v3)
+const archivo = Archivo({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
@@ -55,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${ibmPlexMono.variable} h-full`}>
+    <html lang="es" className={`${archivo.variable} ${ibmPlexMono.variable} h-full`}>
       <head>
         <script
           type="application/ld+json"
