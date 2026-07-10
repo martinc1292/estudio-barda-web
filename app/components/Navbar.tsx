@@ -69,6 +69,10 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
+  // El Studio de Sanity ocupa el viewport completo y no scrollea la ventana,
+  // por lo que este header fixed quedaría transparente sobre él capturando clics.
+  if (pathname.startsWith('/studio')) return null
+
   return (
     <header style={{
       position: 'fixed',

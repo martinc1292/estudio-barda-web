@@ -3,6 +3,7 @@ import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import SiteChrome from "./components/SiteChrome";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import { SITE_URL } from "@/app/lib/proyecto-utils";
 
@@ -64,10 +65,14 @@ export default function RootLayout({
         />
       </head>
       <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <a href="#main-content" className="skip-link">Ir al contenido principal</a>
+        <SiteChrome>
+          <a href="#main-content" className="skip-link">Ir al contenido principal</a>
+        </SiteChrome>
         <Navbar />
         <main id="main-content" style={{ flex: 1 }}>{children}</main>
-        <Footer />
+        <SiteChrome>
+          <Footer />
+        </SiteChrome>
         <ThemeSwitcher />
       </body>
     </html>

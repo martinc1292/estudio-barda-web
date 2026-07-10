@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 type Theme = 'light' | 'stone' | 'dark'
 
@@ -11,6 +12,7 @@ const THEMES: { key: Theme; label: string }[] = [
 ]
 
 export default function ThemeSwitcher() {
+  const pathname = usePathname()
   const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
@@ -18,6 +20,8 @@ export default function ThemeSwitcher() {
     if (theme === 'dark')  document.body.classList.add('theme-dark')
     if (theme === 'stone') document.body.classList.add('theme-stone')
   }, [theme])
+
+  if (pathname.startsWith('/studio')) return null
 
   return (
     <div className="theme-switcher">

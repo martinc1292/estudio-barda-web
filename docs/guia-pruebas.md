@@ -112,8 +112,8 @@ El Studio esta embebido en:
 
 Importante:
 
-- en desarrollo deberia abrir
-- en produccion `proxy.ts` devuelve `404` para `/studio`
+- abre tanto en desarrollo como en produccion
+- el acceso lo protege el login de Sanity (solo miembros invitados editan)
 
 Checklist recomendado:
 

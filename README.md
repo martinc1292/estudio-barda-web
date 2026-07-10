@@ -45,7 +45,7 @@ SANITY_REVALIDATE_SECRET="change_me"
 
 ## Contenido en Sanity
 
-El panel esta embebido en `/studio`. En produccion, `/studio` responde 404 por `proxy.ts`; usarlo en desarrollo o desde Sanity Studio segun el flujo de trabajo elegido.
+El panel esta embebido en `/studio`, accesible tanto en desarrollo como en produccion. El acceso lo protege el login de Sanity: solo los miembros invitados al proyecto pueden editar contenido.
 
 Tipos principales:
 
