@@ -1,0 +1,10 @@
+{
+  "projectId": "7f2cb9d9-5f25-423e-a69c-038e4589bd65",
+  "shape": "handmade",
+  "note": "Repo is a Next.js app, not a bundlable component library or Storybook. The Barda design system is authored by hand into the Claude Design upload layout directly from the app's real design tokens (app/globals.css), fonts (layout.tsx), and UI patterns. No converter/dist bundle applies here.",
+  "source": {
+    "tokens": "app/globals.css",
+    "fonts": "app/layout.tsx",
+    "patterns": ["app/components/Navbar.tsx", "app/components/Footer.tsx", "app/components/Isotipo.tsx", "app/page.tsx"]
+  }
+}
