@@ -20,6 +20,9 @@
 # production
 /build
 
+# design-sync generated bundle (regenerable; inputs live in .design-sync/)
+/ds-bundle
+
 # misc
 .DS_Store
 *.pem
