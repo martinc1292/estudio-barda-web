@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}} | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\components\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\public\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\sanity\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\i18n\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\messages\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Force | Where-Object { $_.PSIsContainer -and $_.Name -notin @\\('node_modules', '.next', '.git'\\) } | Select-Object Name)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\.claude\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
+      "Bash(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Recurse -Directory -Filter \"sanity\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "WebFetch(domain:claude.ai)"
+    ]
+  }
+}

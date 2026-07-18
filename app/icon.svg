@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Isotipo Barda (muro escalonado) — ladrillo sobre hierro.
+       Geometría: ISO_PATH de app/lib/barda-iso.ts (500×359), al 78% centrada. -->
+  <rect width="512" height="512" fill="#0F0F10"/>
+  <g transform="translate(61 116) scale(0.78)">
+    <path d="M0 0 H213 V47 H500 V359 H437 V328 H263 V288 H0 Z" fill="#E24F05"/>
+  </g>
+</svg>

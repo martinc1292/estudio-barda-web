@@ -12,7 +12,9 @@ export const allProjectsQuery = groq`
     destacadoEnHome,
     orden,
     descripcionCorta,
-    imagenPrincipal
+    imagenPrincipal,
+    titulo_en,
+    descripcionCorta_en
   }
 `
 
@@ -25,7 +27,9 @@ export const featuredProjectsQuery = groq`
     anio,
     tipo,
     descripcionCorta,
-    imagenPrincipal
+    imagenPrincipal,
+    titulo_en,
+    descripcionCorta_en
   }
 `
 

@@ -48,3 +48,14 @@ export const TIPO_LABELS_SHORT: Record<NonNullable<Project['tipo']>, string> = {
   departamento: 'Depto.',
   trabajo: 'Trabajo',
 }
+
+/** All project `tipo` enum values, in display order (source of truth: schema). */
+export const TIPO_VALUES = [
+  'casa',
+  'departamento',
+  'refaccion',
+  'local',
+  'trabajo',
+  'cultural',
+  'otro',
+] as const satisfies readonly NonNullable<Project['tipo']>[]

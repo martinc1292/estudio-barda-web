@@ -45,7 +45,8 @@
       "Bash(node run.js /tmp/playwright-test-barda.js)",
       "Bash(dir C:\\\\Users\\\\Martín\\\\AppData\\\\Local\\\\Temp\\\\barda*.png)",
       "Bash(node run.js /tmp/playwright-test-barda2.js)",
-      "Bash(node run.js ' *)"
+      "Bash(node run.js ' *)",
+      "Bash(Select-Object Name, FullName, PSIsContainer)"
     ]
   }
 }

@@ -1,11 +1,5 @@
-import StatusPage from './components/StatusPage'
+import BardaLoader from './components/BardaLoader'
 
 export default function Loading() {
-  return (
-    <StatusPage
-      eyebrow="CARGANDO"
-      title="Trazando el recorrido."
-      description="Estamos preparando la informacion del estudio."
-    />
-  )
+  return <BardaLoader />
 }
