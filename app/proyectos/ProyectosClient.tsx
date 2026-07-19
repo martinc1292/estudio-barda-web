@@ -9,7 +9,7 @@ import { COPY, TIPO_LABELS_EN, pickTitulo } from '@/app/lib/i18n'
 import { useLang } from '@/app/components/LangProvider'
 import type { Project } from '@/sanity/types'
 
-type Vista = 'grid' | 'list'
+type Vista = 'big' | 'grid' | 'list'
 type Sort = 'desc' | 'asc'
 type IntroVariant = 'manifesto' | 'titulo' | 'none'
 
@@ -87,6 +87,17 @@ export default function ProyectosClient({
           </div>
           <div className="view-switch">
             <button
+              className={vista === 'big' ? 'on' : ''}
+              onClick={() => setVista('big')}
+              title={t(COPY.toolbar.gridBig)}
+              aria-label={t(COPY.toolbar.gridBig)}
+              aria-pressed={vista === 'big'}
+            >
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1">
+                <rect x="0.5" y="0.5" width="11" height="11" />
+              </svg>
+            </button>
+            <button
               className={vista === 'grid' ? 'on' : ''}
               onClick={() => setVista('grid')}
               title={t(COPY.toolbar.grid)}
@@ -121,10 +132,20 @@ export default function ProyectosClient({
         <div className="wrap" style={{ padding: '60px 0 88px', textAlign: 'center' }}>
           <p className="label">{t(COPY.toolbar.empty)}</p>
         </div>
-      ) : vista === 'grid' ? (
-        <div className="grid wrap" style={{ '--cols': cols } as React.CSSProperties}>
+      ) : vista !== 'list' ? (
+        <div
+          className={`grid wrap${vista === 'big' ? ' big' : ''}`}
+          style={{ '--cols': vista === 'big' ? 3 : cols } as React.CSSProperties}
+        >
           {shown.map((p, i) => (
-            <Card key={p._id} p={p} lang={lang} name={pickTitulo(p, lang)} priority={i < cols} />
+            <Card
+              key={p._id}
+              p={p}
+              lang={lang}
+              name={pickTitulo(p, lang)}
+              priority={i < cols}
+              big={vista === 'big'}
+            />
           ))}
         </div>
       ) : (
@@ -142,11 +163,13 @@ function Card({
   p,
   name,
   priority,
+  big,
 }: {
   p: Project
   lang: string
   name: string
   priority?: boolean
+  big?: boolean
 }) {
   const imgUrl = p.imagenPrincipal
     ? urlForImage(p.imagenPrincipal).width(800).height(600).fit('crop').url()
@@ -160,7 +183,11 @@ function Card({
             src={imgUrl}
             alt={p.imagenPrincipal?.alt ?? name}
             fill
-            sizes="(max-width: 480px) 100vw, (max-width: 1000px) 50vw, 25vw"
+            sizes={
+              big
+                ? '(max-width: 720px) 100vw, (max-width: 1000px) 50vw, 33vw'
+                : '(max-width: 480px) 100vw, (max-width: 1000px) 50vw, 25vw'
+            }
             style={{ objectFit: 'cover' }}
             priority={priority}
           />

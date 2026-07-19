@@ -56,6 +56,7 @@ export const COPY = {
     yearAsc: { es: 'Año ↑', en: 'Year ↑' },
     yearDesc:{ es: 'Año ↓', en: 'Year ↓' },
     grid:    { es: 'Grilla', en: 'Grid' },
+    gridBig: { es: 'Grilla grande', en: 'Large grid' },
     list:    { es: 'Lista', en: 'List' },
     empty:   { es: 'Sin obras en esta categoría', en: 'No works in this category' },
   },

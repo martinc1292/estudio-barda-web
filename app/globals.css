@@ -269,8 +269,14 @@ img, video { display: block; max-width: 100%; }
   gap: 0;
   padding-bottom: 72px;
 }
-@media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr) !important; } }
-@media (max-width: 720px)  { .grid { grid-template-columns: repeat(2, 1fr) !important; } }
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .grid.big { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 720px) {
+  .grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid.big { grid-template-columns: 1fr !important; }
+}
 @media (max-width: 480px)  { .grid { grid-template-columns: 1fr !important; } }
 
 .pcard { display: block; }
@@ -291,7 +297,7 @@ img, video { display: block; max-width: 100%; }
   inset: auto 0 0 0;
   z-index: 1;
   padding: 14px;
-  background: linear-gradient(180deg, transparent, rgba(15, 15, 16, 0.55) 55%, rgba(15, 15, 16, 0.75));
+  background: linear-gradient(180deg, transparent, rgba(15, 15, 16, 0.65) 45%, rgba(15, 15, 16, 0.9));
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.25s ease, transform 0.25s ease;
