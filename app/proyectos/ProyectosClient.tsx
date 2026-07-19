@@ -167,12 +167,12 @@ function Card({
         ) : (
           <div className="ph-fallback" aria-hidden="true" />
         )}
-      </div>
-      <div className="cap">
-        <h3 className="name">{name}</h3>
-        <div className="meta">
-          <span>{p.anio}</span>
-          <span>{p.ciudad}</span>
+        <div className="cap">
+          <h3 className="name">{name}</h3>
+          <div className="meta">
+            <span>{p.anio}</span>
+            <span>{p.ciudad}</span>
+          </div>
         </div>
       </div>
     </Link>
