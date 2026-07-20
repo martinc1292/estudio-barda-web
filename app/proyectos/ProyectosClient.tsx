@@ -25,7 +25,7 @@ export default function ProyectosClient({
   const { lang, t } = useLang()
   const [filtro, setFiltro] = useState<'all' | NonNullable<Project['tipo']>>('all')
   const [sort, setSort] = useState<Sort>('desc')
-  const [vista, setVista] = useState<Vista>('grid')
+  const [vista, setVista] = useState<Vista>('big')
 
   const shown = useMemo(() => {
     const base = filtro === 'all' ? proyectos : proyectos.filter(p => p.tipo === filtro)

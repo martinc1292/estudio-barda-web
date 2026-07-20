@@ -39,10 +39,12 @@ export function pickDescCorta(p: Project, lang: Lang): string {
    Every hard-coded string in the UI, keyed and bilingual. */
 export const COPY = {
   nav: {
-    obras:    { es: 'Obras',    en: 'Works' },
-    estudio:  { es: 'Estudio',  en: 'Studio' },
-    proceso:  { es: 'Proceso',  en: 'Process' },
-    contacto: { es: 'Contacto', en: 'Contact' },
+    obras:     { es: 'Obras',       en: 'Works' },
+    estudio:   { es: 'Estudio',     en: 'Studio' },
+    proceso:   { es: 'Proceso',     en: 'Process' },
+    contacto:  { es: 'Contacto',    en: 'Contact' },
+    menuOpen:  { es: 'Abrir menú',  en: 'Open menu' },
+    menuClose: { es: 'Cerrar menú', en: 'Close menu' },
   },
   intro: {
     manifesto: {
