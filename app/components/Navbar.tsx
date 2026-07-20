@@ -19,11 +19,6 @@ export default function Navbar() {
   const { lang, setLang, t } = useLang()
   const [open, setOpen] = useState(false)
 
-  // Cerrar el overlay al navegar (los <Link> son client-side, no recargan).
-  useEffect(() => {
-    setOpen(false)
-  }, [pathname])
-
   // Mientras el menú está abierto: bloquear scroll del body y cerrar con Escape.
   useEffect(() => {
     if (!open) return
@@ -52,6 +47,9 @@ export default function Navbar() {
         href={href}
         className={`${className} ${isActive(href) ? 'active' : ''}`}
         aria-current={isActive(href) ? 'page' : undefined}
+        // Cerrar el overlay al elegir un item (los <Link> navegan client-side,
+        // no recargan). Inocuo en la nav desktop, donde el overlay ya está cerrado.
+        onClick={() => setOpen(false)}
       >
         {t(COPY.nav[key])}
       </Link>
