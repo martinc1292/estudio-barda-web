@@ -472,7 +472,10 @@ img, video { display: block; max-width: 100%; }
 }
 
 /* ─── Content pages (studio / process / contact) ──────── */
-.page { padding: 56px 0 88px; }
+/* Solo padding vertical: el horizontal lo aporta `.wrap` (var(--pad-x)),
+   igual que en Obras y en `.footer .wrap`. Un shorthand `padding: 56px 0 88px`
+   pondría el lateral en 0 y, al ir después de `.wrap`, anularía el gutter. */
+.page { padding-top: 56px; padding-bottom: 88px; }
 .page .kicker {
   font-family: var(--font-mono);
   font-size: 10.5px;
