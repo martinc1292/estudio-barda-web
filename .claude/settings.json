@@ -15,7 +15,9 @@
       "PowerShell(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\\\\.claude\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"DIR\"}else{\"FILE\"}}})",
       "Bash(Get-ChildItem -Path \"d:\\\\Proyectos\\\\estudio-barda-web\" -Recurse -Directory -Filter \"sanity\")",
       "WebFetch(domain:api.anthropic.com)",
-      "WebFetch(domain:claude.ai)"
+      "WebFetch(domain:claude.ai)",
+      "Bash(gh run *)",
+      "Bash(git check-ignore *)"
     ]
   }
 }
