@@ -1,7 +1,10 @@
 import type { Project } from '@/sanity/types'
 
+// `||` y no `??`: en el CI un secret sin definir se inyecta como string vacío
+// (no undefined), y `'' ?? fallback` devolvería '' → `new URL('')` tira. Con `||`
+// el string vacío también cae al fallback y el build no explota.
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://estudio-barda.com'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://estudio-barda.com'
 
 export const CONTACT_DEFAULTS = {
   email: 'bardaarquitectura@gmail.com',

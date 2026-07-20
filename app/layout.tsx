@@ -38,7 +38,7 @@ const ibmPlexMono = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://estudio-barda.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Barda Arquitectura",
     template: "%s — Barda Arquitectura",
